@@ -23,5 +23,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "nox"
-include(":app")
+include(":common")
 include(":news")
