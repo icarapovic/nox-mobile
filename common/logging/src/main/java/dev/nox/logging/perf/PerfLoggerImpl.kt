@@ -3,7 +3,7 @@ package dev.nox.logging.perf
 import dev.nox.logging.logger.Logger
 import kotlin.system.measureTimeMillis
 
-class PerfLoggerImpl(private val logger: Logger) : PerfLogger {
+internal class PerfLoggerImpl(private val logger: Logger) : PerfLogger {
 
     override fun measure(key: String, block: () -> Unit) {
         try {
