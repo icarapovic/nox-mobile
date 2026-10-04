@@ -26,3 +26,4 @@ rootProject.name = "nox"
 include(":common")
 include(":news")
 include(":common:logging")
+include(":common:net")
