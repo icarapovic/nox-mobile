@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.chapz.nox"
+    namespace = "dev.nox.app"
     compileSdk {
         version = release(37)
     }
