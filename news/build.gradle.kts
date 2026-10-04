@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.koin.compose.navigation)
     implementation(libs.koin.compose.workmanager)
 
+    implementation(project(":common:logging"))
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
