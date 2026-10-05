@@ -1,6 +1,10 @@
 package dev.nox.news
 
+import androidx.room3.Room
+import androidx.sqlite.driver.AndroidSQLiteDriver
 import dev.nox.net.BaseUrlProvider
+import dev.nox.news.data.local.DB_NAME
+import dev.nox.news.data.local.NewsDatabase
 import dev.nox.news.data.remote.hn.HackerNewsBaseUrlProvider
 import dev.nox.news.data.remote.hn.HackerNewsBaseUrlProvider.Companion.HN_NAME
 import dev.nox.news.data.remote.hn.HackerNewsClient
@@ -16,4 +20,12 @@ val hackerNewsModule = module {
 
 val viewModelModule = module {
     viewModel<FrontPageViewModel> { FrontPageViewModel(get()) }
+}
+
+val databaseModule = module {
+    single<NewsDatabase> {
+        Room.databaseBuilder<NewsDatabase>(get(), DB_NAME)
+            .setDriver(AndroidSQLiteDriver())
+            .build()
+    }
 }
