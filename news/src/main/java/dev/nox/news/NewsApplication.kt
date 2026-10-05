@@ -2,6 +2,7 @@ package dev.nox.news
 
 import android.app.Application
 import dev.nox.logging.loggingModule
+import dev.nox.logging.setupLogging
 import dev.nox.logging.uncaught.CrashLogHandler
 import dev.nox.net.networkModule
 import org.koin.android.ext.android.get
@@ -14,6 +15,8 @@ class NewsApplication : Application(), KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
+
+        setupLogging()
 
         startKoin {
             androidLogger()
