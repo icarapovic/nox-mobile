@@ -18,7 +18,8 @@ class NewsApplication : Application() {
             modules(
                 loggingModule,
                 networkModule,
-                hackerNewsModule
+                hackerNewsModule,
+                viewModelModule
             )
         }
     }
