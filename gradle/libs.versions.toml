@@ -18,8 +18,8 @@ retrofitKotlinxSerializationConverter = "3.0.0"
 kotlinxSerialization = "1.11.0"
 timber = "5.0.1"
 coil = "3.6.3"
-room = "2.8.4"
-ksp = "2.3.9"
+room = "3.0.3"
+ksp = "2.3.10"
 lifecycleRuntimeKtx = "2.11.0"
 
 [libraries]
@@ -36,6 +36,9 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+
+room-runtime = { module = "androidx.room3:room3-runtime-android", version.ref = "room" }
+room-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
 
 retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofitKotlinxSerializationConverter" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -67,4 +70,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 

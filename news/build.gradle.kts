@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -49,6 +50,9 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.navigation)
     implementation(libs.koin.compose.workmanager)
+
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
 
     implementation(project(":common:logging"))
     implementation(project(":common:net"))
