@@ -7,4 +7,5 @@ internal class LoggerImpl : Logger {
     override fun info(message: () -> String) = Timber.i(message.invoke())
     override fun warning(message: () -> String) = Timber.i(message.invoke())
     override fun error(e: Throwable?, message: () -> String) = Timber.e(e, message.invoke())
+    override fun perf(key: String, message: () -> String) = Timber.tag("[P] $key").i(message.invoke())
 }

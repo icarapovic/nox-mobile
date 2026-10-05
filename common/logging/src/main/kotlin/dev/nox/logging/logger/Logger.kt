@@ -5,4 +5,5 @@ interface Logger {
     fun info(message: () -> String)
     fun warning(message: () -> String)
     fun error(e: Throwable?, message: () -> String)
+    fun perf(key: String, message: () -> String)
 }
