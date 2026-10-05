@@ -2,30 +2,22 @@ package dev.nox.logging.perf
 
 import dev.nox.logging.logger.Logger
 import kotlin.system.measureTimeMillis
+import kotlin.time.Duration
+import kotlin.time.TimedValue
+import kotlin.time.measureTime
+import kotlin.time.measureTimedValue
 
 internal class PerfLoggerImpl(private val logger: Logger) : PerfLogger {
 
-    override suspend fun measureSuspending(key: String, block: suspend () -> Unit): Long {
-        try {
-            val timeMillis = measureTimeMillis { block.invoke() }
-            logger.info { "[P] $key: ${timeMillis}ms" }
-            return timeMillis
-        } catch (e: Throwable) {
-            logger.error(e) { "Failed to measure performance for '$key' due to an error." }
-        }
-
-        return -1
+    override suspend fun <T> measureSuspending(key: String, block: suspend () -> T): T {
+        val (value, duration) = measureTimedValue { block.invoke() }
+        logger.perf(key) { "${duration.inWholeMilliseconds}ms" }
+        return value
     }
 
-    override fun measure(key: String, block: () -> Unit): Long {
-        try {
-            val timeMillis = measureTimeMillis { block.invoke() }
-            logger.info { "[P] $key: ${timeMillis}ms" }
-            return timeMillis
-        } catch (e: Throwable) {
-            logger.error(e) { "Failed to measure performance for '$key' due to an error." }
-        }
-
-        return -1
+    override fun <T> measure(key: String, block: () -> T): T {
+        val (value, duration) = measureTimedValue { block.invoke() }
+        logger.perf(key) { "${duration.inWholeMilliseconds}ms" }
+        return value
     }
 }

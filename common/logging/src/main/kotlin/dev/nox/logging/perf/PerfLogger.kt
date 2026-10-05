@@ -1,6 +1,9 @@
 package dev.nox.logging.perf
 
+import kotlin.time.TimedValue
+
 interface PerfLogger {
-    suspend fun measureSuspending(key: String, block: suspend () -> Unit): Long
-    fun measure(key: String, block: () -> Unit): Long
+    suspend fun <T> measureSuspending(key: String, block: suspend () -> T): T
+
+    fun <T> measure(key: String, block: () -> T): T
 }
