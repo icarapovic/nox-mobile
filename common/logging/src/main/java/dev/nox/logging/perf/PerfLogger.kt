@@ -1,5 +1,6 @@
 package dev.nox.logging.perf
 
 interface PerfLogger {
-    fun measure(key: String, block: () -> Unit)
+    suspend fun measureSuspending(key: String, block: suspend () -> Unit): Long
+    fun measure(key: String, block: () -> Unit): Long
 }
