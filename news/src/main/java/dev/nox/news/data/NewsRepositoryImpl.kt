@@ -1,58 +1,26 @@
 package dev.nox.news.data
 
-import dev.nox.logging.logger.Logger
-import dev.nox.logging.perf.PerfLogger
-import dev.nox.news.data.local.NewsDao
-import dev.nox.news.data.remote.hn.HackerNewsClient
-import dev.nox.news.data.remote.hn.HackerNewsStory
-import dev.nox.news.domain.NewsItem
-import dev.nox.news.domain.NewsSource
-import kotlin.Result
+import dev.nox.news.data.local.hn.HackerNewsDao
+import dev.nox.news.data.local.hn.HackerNewsEntity
+import dev.nox.news.data.local.hn.toDomain
+import dev.nox.news.domain.models.HackerNewsItem
+import dev.nox.news.domain.repository.NewsRepository
+import dev.nox.news.domain.usecase.FetchHackerNewsTopStoriesUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class NewsRepositoryImpl(
-    private val newsDao: NewsDao,
-    private val hackerNewsClient: HackerNewsClient,
-    private val logger: Logger,
-    private val perfLogger: PerfLogger
+    private val hackerNewsDao: HackerNewsDao,
+    private val fetchHackerNewsTopStoriesUseCase: FetchHackerNewsTopStoriesUseCase,
 ) : NewsRepository {
 
-    override suspend fun getNews(): List<NewsItem> {
-        val stories = mutableListOf<HackerNewsStory>()
-        var storyResponse: Result<List<Long>> = Result.failure(
-            exception = UninitializedPropertyAccessException("Stories request didn't run")
-        )
+    override suspend fun observeHackerNewsTopStories(): Flow<List<HackerNewsItem>> {
+        return hackerNewsDao.observeTopStories()
+            .map { news -> news.map(transform = HackerNewsEntity::toDomain) }
+    }
 
-        perfLogger.measureSuspending("Fetch new stories") {
-            storyResponse = hackerNewsClient.fetchNewStories()
-        }
-
-        storyResponse.fold(
-            onSuccess = { storyIds ->
-                var story: Result<HackerNewsStory> = Result.failure(
-                    exception = UninitializedPropertyAccessException("Stories request didn't run")
-                )
-                storyIds.take(10).forEach { storyId ->
-                    perfLogger.measureSuspending("Fetch story") {
-                        story = hackerNewsClient.fetchStory(storyId)
-                    }
-
-                    story.fold(
-                        onSuccess = { story ->
-                            // persist stories locally
-                            stories.add(story)
-                        },
-                        onFailure = { error ->
-                            logger.error(error) { "Failed to fetch story $storyId: ${error.message}" }
-                        }
-                    )
-                }
-            },
-            onFailure = { error ->
-                logger.error(error) { "Failed to fetch HN stories: ${error.message}" }
-            }
-        )
-
-        return stories.map { NewsItem(it.id, NewsSource.HACKER_NEWS, it.title) }
+    override suspend fun fetchHackerNewsTopStories(storyCount: Int) {
+        fetchHackerNewsTopStoriesUseCase.fetch(storyCount)
     }
 
 }

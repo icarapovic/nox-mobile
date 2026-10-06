@@ -1,4 +1,4 @@
-package dev.nox.news.data.remote.hn
+package dev.nox.news.data.remote.hn.client
 
 import dev.nox.net.BaseUrlProvider
 

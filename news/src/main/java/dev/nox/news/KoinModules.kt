@@ -3,14 +3,20 @@ package dev.nox.news
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
 import dev.nox.net.BaseUrlProvider
-import dev.nox.news.data.NewsRepository
+import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.data.NewsRepositoryImpl
 import dev.nox.news.data.local.DB_NAME
-import dev.nox.news.data.local.NewsDao
+import dev.nox.news.data.local.hn.HackerNewsDao
 import dev.nox.news.data.local.NewsDatabase
-import dev.nox.news.data.remote.hn.HackerNewsBaseUrlProvider
-import dev.nox.news.data.remote.hn.HackerNewsBaseUrlProvider.Companion.HN_NAME
-import dev.nox.news.data.remote.hn.HackerNewsClient
+import dev.nox.news.data.remote.hn.client.HackerNewsBaseUrlProvider
+import dev.nox.news.data.remote.hn.client.HackerNewsBaseUrlProvider.Companion.HN_NAME
+import dev.nox.news.data.remote.hn.client.HackerNewsClient
+import dev.nox.news.data.remote.hn.uc.FetchHackerNewsStoryUseCaseImpl
+import dev.nox.news.data.remote.hn.uc.FetchHackerNewsTopStoriesUseCaseImpl
+import dev.nox.news.data.remote.hn.uc.SaveHackerNewsStoryUseCaseImpl
+import dev.nox.news.domain.usecase.FetchHackerNewsStoryUseCase
+import dev.nox.news.domain.usecase.FetchHackerNewsTopStoriesUseCase
+import dev.nox.news.domain.usecase.SaveHackerNewsStoryUseCase
 import dev.nox.news.frontpage.FrontPageViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -28,21 +34,41 @@ val hackerNewsModule = module {
 }
 
 val viewModelModule = module {
-    viewModel<FrontPageViewModel> { FrontPageViewModel(newsRepository = get()) }
+    viewModel<FrontPageViewModel> { FrontPageViewModel(
+        newsRepository = get(),
+        logger = get()
+    ) }
 }
 
 val databaseModule = module {
-    single<NewsDao> {
+    single<HackerNewsDao> {
         Room.databaseBuilder<NewsDatabase>(
             context = get(),
             DB_NAME
         ).setDriver(AndroidSQLiteDriver())
-            .build().newsDao()
+            .build().hackerNewsDao()
     }
 
     single<NewsRepository> { NewsRepositoryImpl(
-        newsDao = get(),
+        hackerNewsDao = get(),
+        fetchHackerNewsTopStoriesUseCase = get()
+    )}
+}
+
+val useCaseModule = module {
+    single<SaveHackerNewsStoryUseCase> { SaveHackerNewsStoryUseCaseImpl(
+        dao = get(),
+        perfLogger = get()
+    ) }
+    single<FetchHackerNewsStoryUseCase> { FetchHackerNewsStoryUseCaseImpl(
         hackerNewsClient = get(),
+        logger = get(),
+        perfLogger = get()
+    )}
+    single<FetchHackerNewsTopStoriesUseCase> { FetchHackerNewsTopStoriesUseCaseImpl(
+        hackerNewsClient = get(),
+        fetchHackerNewsStoryUseCase = get(),
+        saveHackerNewsStoryUseCase = get(),
         logger = get(),
         perfLogger = get()
     )}

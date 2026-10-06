@@ -1,12 +1,14 @@
-package dev.nox.news.data.remote.hn
+package dev.nox.news.data.remote.hn.client
 
+import dev.nox.news.data.remote.hn.dto.HackerNewsCommentDto
+import dev.nox.news.data.remote.hn.dto.HackerNewsStoryDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface HackerNewsApi {
 
     @GET("item/{storyId}.json")
-    suspend fun fetchStory(@Path("storyId") storyId: Long): HackerNewsStory
+    suspend fun fetchStory(@Path("storyId") storyId: Long): HackerNewsStoryDto
 
     @GET("topstories.json")
     suspend fun fetchTopStories(): List<Long>
@@ -27,5 +29,5 @@ interface HackerNewsApi {
     suspend fun fetchJobStories(): List<Long>
 
     @GET("item/{commentId}.json")
-    suspend fun fetchComment(@Path("commentId") commentId: Long): HackerNewsComment
+    suspend fun fetchComment(@Path("commentId") commentId: Long): HackerNewsCommentDto
 }

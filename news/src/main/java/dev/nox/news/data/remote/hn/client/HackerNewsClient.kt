@@ -1,6 +1,8 @@
-package dev.nox.news.data.remote.hn
+package dev.nox.news.data.remote.hn.client
 
 import dev.nox.net.BaseUrlProvider
+import dev.nox.news.data.remote.hn.dto.HackerNewsCommentDto
+import dev.nox.news.data.remote.hn.dto.HackerNewsStoryDto
 import dev.nox.news.domain.ContentNotAccessibleException
 import okhttp3.OkHttpClient
 import okio.IOException
@@ -22,7 +24,7 @@ class HackerNewsClient(
         .build()
         .create<HackerNewsApi>()
 
-    suspend fun fetchStory(storyId: Long): Result<HackerNewsStory> {
+    suspend fun fetchStory(storyId: Long): Result<HackerNewsStoryDto> {
         try {
             val story = retrofitClient.fetchStory(storyId)
             return Result.success(story)
@@ -99,7 +101,7 @@ class HackerNewsClient(
         }
     }
 
-    suspend fun fetchComment(commentId: Long): Result<HackerNewsComment?> {
+    suspend fun fetchComment(commentId: Long): Result<HackerNewsCommentDto?> {
         try {
             val story = retrofitClient.fetchComment(commentId)
             return Result.success(story)

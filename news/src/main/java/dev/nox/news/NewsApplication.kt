@@ -26,7 +26,8 @@ class NewsApplication : Application(), KoinComponent {
                 networkModule,
                 databaseModule,
                 hackerNewsModule,
-                viewModelModule
+                viewModelModule,
+                useCaseModule
             )
         }
 

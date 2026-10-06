@@ -1,14 +1,16 @@
-package dev.nox.news.data.local.entity
+package dev.nox.news.data.local.hn
 
 import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
+import dev.nox.news.domain.models.HackerNewsItem
+import dev.nox.news.domain.repository.NewsSource
 
 @Entity(tableName = "hacker_news")
 data class HackerNewsEntity(
     @ColumnInfo(name = "id")
     @PrimaryKey
-    val id: Long,
+    val id: Long? = null,
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "description")
@@ -28,3 +30,9 @@ data class HackerNewsEntity(
     @ColumnInfo(name = "descendants")
     val descendants: Int? = null
 )
+
+fun HackerNewsEntity.toDomain() = HackerNewsItem(
+        this.id ?: -1,
+        NewsSource.HACKER_NEWS,
+        this.title,
+    )
