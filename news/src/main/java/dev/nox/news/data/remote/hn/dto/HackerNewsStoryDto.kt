@@ -19,6 +19,7 @@ data class HackerNewsStoryDto(
 )
 
 fun HackerNewsStoryDto.toEntity() = HackerNewsEntity(
+    id = id,
     title = title,
     text = text,
     author = by,
