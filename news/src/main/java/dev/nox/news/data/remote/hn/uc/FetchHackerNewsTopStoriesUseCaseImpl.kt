@@ -32,7 +32,10 @@ class FetchHackerNewsTopStoriesUseCaseImpl(
                     .take(storyCount)
                     .forEachIndexed { index, id ->
                         fetchHackerNewsStoryUseCase.fetch(storyId = id)?.let { story ->
-                            saveHackerNewsStoryUseCase.save(story, HnCategory.TOP, index)
+                            saveHackerNewsStoryUseCase.save(
+                                story,
+                                HnCategory.TOP,
+                                index + 1)
                         }
                     }
             },
