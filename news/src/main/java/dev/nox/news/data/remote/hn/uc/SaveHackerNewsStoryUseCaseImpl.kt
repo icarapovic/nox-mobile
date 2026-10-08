@@ -4,6 +4,7 @@ import dev.nox.logging.perf.PerfLogger
 import dev.nox.news.data.local.hn.HackerNewsDao
 import dev.nox.news.data.remote.hn.dto.HackerNewsStoryDto
 import dev.nox.news.data.remote.hn.dto.toEntity
+import dev.nox.news.domain.models.HnCategory
 import dev.nox.news.domain.usecase.SaveHackerNewsStoryUseCase
 
 class SaveHackerNewsStoryUseCaseImpl(
@@ -11,10 +12,10 @@ class SaveHackerNewsStoryUseCaseImpl(
     private val perfLogger: PerfLogger
 ) : SaveHackerNewsStoryUseCase {
 
-    override suspend fun save(story: HackerNewsStoryDto) {
+    override suspend fun save(story: HackerNewsStoryDto, category: HnCategory, rank: Int) {
         perfLogger.measureSuspending("SHNS") {
             if(story.dead == false) {
-                dao.insertStory(story.toEntity())
+                dao.insertStory(story.toEntity(category.name, rank))
             }
         }
     }

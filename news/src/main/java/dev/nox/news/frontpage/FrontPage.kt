@@ -16,9 +16,9 @@ fun HackerNews(viewModel: FrontPageViewModel = koinViewModel()) {
             LazyColumn {
                 items(
                     count = state.value.stories.size,
-                    key = { index -> state.value.stories[index].id }
+                    key = { index -> state.value.stories[index].title + state.value.stories[index].url }
                 ) { index ->
-                    val story = state.value.stories[index]
+                    val story = state.value.stories.sortedBy { it.rank }[index]
                     Story(story)
                 }
             }

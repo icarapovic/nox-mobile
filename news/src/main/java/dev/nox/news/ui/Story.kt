@@ -22,13 +22,7 @@ fun Story(story: HackerNewsItem) {
             fontSize = 16.sp,
             text = story.title
         )
-        story.description?.let {
-            Text(
-                fontWeight = FontWeight.Normal,
-                fontSize = 12.sp,
-                text = story.description
-            )
-        } ?: story.url?.let {
+        story.url?.let {
             Text(
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,

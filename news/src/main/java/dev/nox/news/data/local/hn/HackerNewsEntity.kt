@@ -25,6 +25,10 @@ data class HackerNewsEntity(
     val storyType: String,
     @ColumnInfo(name = "comment_ids")
     val comments: String,
+    @ColumnInfo("category")
+    val category: String,
+    @ColumnInfo("rank")
+    val rank: Int,
     @ColumnInfo(name = "score")
     val score: Int? = null,
     @ColumnInfo(name = "descendants")
@@ -32,9 +36,10 @@ data class HackerNewsEntity(
 )
 
 fun HackerNewsEntity.toDomain() = HackerNewsItem(
-    this.id ?: -1,
     NewsSource.HACKER_NEWS,
     this.title,
     this.text,
-    this.url
+    this.url,
+    this.score ?: 0,
+    this.rank
 )

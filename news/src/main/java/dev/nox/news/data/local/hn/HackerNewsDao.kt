@@ -13,9 +13,6 @@ interface HackerNewsDao {
     @Query("SELECT * FROM hacker_news")
     fun observeTopStories(): Flow<List<HackerNewsEntity>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM hacker_news WHERE id = :id)")
-    suspend fun containsStory(id: Long): Boolean
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Upsert
     suspend fun insertStory(topStory: HackerNewsEntity)
 }

@@ -11,11 +11,9 @@ import dev.nox.news.data.local.NewsDatabase
 import dev.nox.news.data.remote.hn.client.HackerNewsBaseUrlProvider
 import dev.nox.news.data.remote.hn.client.HackerNewsBaseUrlProvider.Companion.HN_NAME
 import dev.nox.news.data.remote.hn.client.HackerNewsClient
-import dev.nox.news.data.remote.hn.uc.CheckHackerNewsStoryCachedImpl
 import dev.nox.news.data.remote.hn.uc.FetchHackerNewsStoryUseCaseImpl
 import dev.nox.news.data.remote.hn.uc.FetchHackerNewsTopStoriesUseCaseImpl
 import dev.nox.news.data.remote.hn.uc.SaveHackerNewsStoryUseCaseImpl
-import dev.nox.news.domain.usecase.CheckHackerNewsStoryCached
 import dev.nox.news.domain.usecase.FetchHackerNewsStoryUseCase
 import dev.nox.news.domain.usecase.FetchHackerNewsTopStoriesUseCase
 import dev.nox.news.domain.usecase.SaveHackerNewsStoryUseCase
@@ -67,12 +65,10 @@ val useCaseModule = module {
         logger = get(),
         perfLogger = get()
     )}
-    single<CheckHackerNewsStoryCached> { CheckHackerNewsStoryCachedImpl(get()) }
     single<FetchHackerNewsTopStoriesUseCase> { FetchHackerNewsTopStoriesUseCaseImpl(
         hackerNewsClient = get(),
         fetchHackerNewsStoryUseCase = get(),
         saveHackerNewsStoryUseCase = get(),
-        checkHackerNewsStoryCached = get(),
         logger = get(),
         perfLogger = get()
     )}
