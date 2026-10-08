@@ -4,6 +4,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.nox.news.ui.Story
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -18,7 +19,7 @@ fun HackerNews(viewModel: FrontPageViewModel = koinViewModel()) {
                     key = { index -> state.value.stories[index].id }
                 ) { index ->
                     val story = state.value.stories[index]
-                    Text(story.title)
+                    Story(story)
                 }
             }
         }

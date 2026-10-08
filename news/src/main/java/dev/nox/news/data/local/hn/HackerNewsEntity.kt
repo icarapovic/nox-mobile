@@ -32,7 +32,9 @@ data class HackerNewsEntity(
 )
 
 fun HackerNewsEntity.toDomain() = HackerNewsItem(
-        this.id ?: -1,
-        NewsSource.HACKER_NEWS,
-        this.title,
-    )
+    this.id ?: -1,
+    NewsSource.HACKER_NEWS,
+    this.title,
+    this.text,
+    this.url
+)

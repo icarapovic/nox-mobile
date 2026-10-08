@@ -13,7 +13,9 @@ class SaveHackerNewsStoryUseCaseImpl(
 
     override suspend fun save(story: HackerNewsStoryDto) {
         perfLogger.measureSuspending("SHNS") {
-            dao.insertStory(story.toEntity())
+            if(story.dead == false) {
+                dao.insertStory(story.toEntity())
+            }
         }
     }
 }

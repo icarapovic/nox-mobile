@@ -11,6 +11,7 @@ data class HackerNewsStoryDto(
     val by: String,
     val time: Long,
     val url: String? = null,
+    val dead: Boolean? = false,
     val type: String,
     val kids: List<Long> = listOf(),
     val score: Int? = null,
