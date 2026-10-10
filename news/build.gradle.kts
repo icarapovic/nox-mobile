@@ -41,6 +41,11 @@ android {
     }
 }
 
+koinCompiler {
+    compileSafety = true
+    userLogs = true
+}
+
 dependencies {
     // Koin DI
     implementation(platform(libs.koin.bom))
