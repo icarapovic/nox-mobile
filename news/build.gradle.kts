@@ -45,6 +45,10 @@ koinCompiler {
 }
 
 dependencies {
+    implementation(project(":news:domain"))
+    implementation(project(":common:logging"))
+    implementation(project(":common:net"))
+
     // Koin DI
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
@@ -57,8 +61,7 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
 
-    implementation(project(":common:logging"))
-    implementation(project(":common:net"))
+
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
