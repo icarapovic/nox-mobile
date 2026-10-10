@@ -1,7 +1,6 @@
 package dev.nox.news.frontpage
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.nox.news.ui.Story
@@ -9,23 +8,15 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HackerNews(viewModel: FrontPageViewModel = koinViewModel()) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
+    val state = viewModel.uiState.collectAsStateWithLifecycle().value
 
-    when (state.value.isSuccessful) {
-        true -> {
-            LazyColumn {
-                items(
-                    count = state.value.stories.size,
-                    key = { index -> state.value.stories[index].title + state.value.stories[index].url }
-                ) { index ->
-                    val story = state.value.stories.sortedBy { it.rank }[index]
-                    Story(story)
-                }
+    LazyColumn {
+        items(
+            count = state.stories.size,
+            key = { index ->
+                val story = state.stories[index]
+                story.title + story.url
             }
-        }
-
-        false -> {
-            Text(state.value.errorMessage)
-        }
+        ) { index -> Story(state.stories[index]) }
     }
 }

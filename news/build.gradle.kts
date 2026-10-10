@@ -46,6 +46,7 @@ koinCompiler {
 
 dependencies {
     implementation(project(":news:domain"))
+    implementation(project(":news:data"))
     implementation(project(":common:logging"))
     implementation(project(":common:net"))
 

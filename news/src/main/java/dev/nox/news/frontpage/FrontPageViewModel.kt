@@ -3,33 +3,32 @@ package dev.nox.news.frontpage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.nox.logging.logger.Logger
-import dev.nox.news.domain.models.HackerNewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import dev.nox.news.domain.repository.NewsSource
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.component.KoinComponent
-import java.time.Instant
 
 class FrontPageViewModel(
-    private val newsRepository: NewsRepository,
+    newsRepository: NewsRepository,
     private val logger: Logger,
 ) : ViewModel(), KoinComponent {
-    private val _uiState = MutableStateFlow(FrontPageUiState())
-    val uiState: StateFlow<FrontPageUiState> = _uiState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            newsRepository.observeHackerNewsTopStories().collect { stories ->
-                logger.info { "Stories refreshed: count: ${stories.count()}" }
-                _uiState.tryEmit(FrontPageUiState(stories))
-            }
-        }
-
-        viewModelScope.launch {
-            newsRepository.fetchHackerNewsTopStories(50)
-        }
-    }
+    val uiState: StateFlow<HackerNewsTopStories> = combine(
+        newsRepository.observeNews(NewsSource.HN_TOP),
+        newsRepository.refreshNews(NewsSource.HN_TOP, 50)
+    ) { stories, progress ->
+        HackerNewsTopStories(
+            stories = stories.map { it as HackerNewsItem },
+            progress = progress
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = HackerNewsTopStories()
+    )
 
 }

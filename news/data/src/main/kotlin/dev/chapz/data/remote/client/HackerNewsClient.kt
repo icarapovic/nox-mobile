@@ -1,9 +1,9 @@
-package dev.nox.news.data.remote.hn.client
+package dev.chapz.data.remote.client
 
-import dev.nox.net.BaseUrlProvider
-import dev.nox.news.data.remote.hn.dto.HackerNewsCommentDto
-import dev.nox.news.data.remote.hn.dto.HackerNewsStoryDto
-import dev.nox.news.domain.ContentNotAccessibleException
+import dev.chapz.data.remote.dto.HackerNewsCommentDto
+import dev.chapz.data.remote.dto.HackerNewsStoryDto
+import dev.nox.news.domain.exceptions.DataFetchingException
+import dev.nox.news.domain.exceptions.NoInternetException
 import okhttp3.OkHttpClient
 import okio.IOException
 import retrofit2.Converter
@@ -11,14 +11,15 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.create
 
-class HackerNewsClient(
-    baseUrlProvider: BaseUrlProvider,
+class HackerNewsClient (
     okHttpHttp: OkHttpClient,
-    converterFactory: Converter.Factory
+    converterFactory: Converter.Factory,
 ) {
 
+    private val baseUrl = "https://hacker-news.firebaseio.com/v0/"
+
     private val retrofitClient = Retrofit.Builder()
-        .baseUrl(baseUrlProvider.provideBaseUrl())
+        .baseUrl(baseUrl)
         .client(okHttpHttp)
         .addConverterFactory(converterFactory)
         .build()
@@ -29,9 +30,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchStory(storyId)
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -40,9 +41,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchTopStories()
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -51,9 +52,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchBestStories()
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -62,9 +63,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchNewStories()
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -73,9 +74,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchAskStories()
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -84,9 +85,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchShowStories()
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -95,9 +96,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchJobStories()
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 
@@ -106,9 +107,9 @@ class HackerNewsClient(
             val story = retrofitClient.fetchComment(commentId)
             return Result.success(story)
         } catch (e: HttpException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
         } catch (e: IOException) {
-            return Result.failure(ContentNotAccessibleException(e))
+            return Result.failure(NoInternetException(e.message))
         }
     }
 }

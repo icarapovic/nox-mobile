@@ -1,7 +1,7 @@
-package dev.nox.news.data.remote.hn.client
+package dev.chapz.data.remote.client
 
-import dev.nox.news.data.remote.hn.dto.HackerNewsCommentDto
-import dev.nox.news.data.remote.hn.dto.HackerNewsStoryDto
+import dev.chapz.data.remote.dto.HackerNewsCommentDto
+import dev.chapz.data.remote.dto.HackerNewsStoryDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 

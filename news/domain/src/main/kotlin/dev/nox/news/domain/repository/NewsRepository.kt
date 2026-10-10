@@ -15,12 +15,15 @@ interface NewsRepository {
      * @param source the [NewsSource] from which to load news
      * @return An observable flow of [NewsItem]s
      * */
-    suspend fun observeNews(source: NewsSource): Flow<List<NewsItem>>
+    fun observeNews(source: NewsSource): Flow<List<NewsItem>>
 
     /**
      * Fetches the newest news from the [NewsSource]
      *
      * @param source the [NewsSource] from which to load news
+     *
+     * @return Float value between 0.0 and 100.0 representing
+     * the progress of refreshing the news in background
      * */
-    suspend fun refreshNews(source: NewsSource)
+    fun refreshNews(source: NewsSource, maxStoriesCount: Int): Flow<Float>
 }

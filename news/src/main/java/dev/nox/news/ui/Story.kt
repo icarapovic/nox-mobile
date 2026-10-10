@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.nox.news.domain.models.HackerNewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
 
 @Composable
 fun Story(story: HackerNewsItem) {
@@ -30,11 +30,6 @@ fun Story(story: HackerNewsItem) {
             context.startActivity(intent)
         }),
     ) {
-        Text(
-            modifier = Modifier.width(24.dp),
-            textAlign = TextAlign.End,
-            text = "${story.rank}."
-        )
         Column(
             modifier = Modifier.padding(start = 8.dp)
         ) {
@@ -43,12 +38,12 @@ fun Story(story: HackerNewsItem) {
                 fontSize = 16.sp,
                 text = story.title
             )
-            story.url?.let {
+            story.url?.let { url ->
                 Text(
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
                     color = Color.Gray,
-                    text = "(${story.url
+                    text = "(${url
                         .replace("https://", "")
                         .replace("www.", "")
                         .substringBefore("/")

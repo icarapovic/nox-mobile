@@ -1,6 +1,7 @@
 package dev.nox.news
 
 import android.app.Application
+import dev.chapz.data.dataModule
 import dev.nox.logging.loggingModule
 import dev.nox.logging.setupLogging
 import dev.nox.logging.uncaught.CrashLogHandler
@@ -24,10 +25,8 @@ class NewsApplication : Application(), KoinComponent {
             modules(
                 loggingModule,
                 networkModule,
-                databaseModule,
-                hackerNewsModule,
+                dataModule,
                 viewModelModule,
-                useCaseModule
             )
         }
 
