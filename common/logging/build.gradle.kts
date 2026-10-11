@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.chapz.logging"
+    namespace = "dev.nox.logging"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

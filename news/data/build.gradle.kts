@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.chapz.data"
+    namespace = "dev.nox.news.data"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
