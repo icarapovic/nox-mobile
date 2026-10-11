@@ -3,32 +3,45 @@ package dev.nox.news.ui.frontpage
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.nox.logging.logger.Logger
-import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class FrontPageViewModel(
     newsRepository: NewsRepository,
     private val logger: Logger,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel(), KoinComponent {
 
-    val uiState: StateFlow<HackerNewsTopStories> = combine(
-        newsRepository.observeNews(NewsSource.HN_TOP),
-        newsRepository.refreshNews(NewsSource.HN_TOP, 50)
-    ) { stories, progress ->
-        HackerNewsTopStories(
-            stories = stories.map { it as HackerNewsItem },
-            progress = progress
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = HackerNewsTopStories()
-    )
+    private val _news: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val newsState = _news.asStateFlow()
+
+    private val _progress: MutableStateFlow<Float> = MutableStateFlow(0f)
+        val progressState = _progress.asStateFlow()
+
+    init {
+        viewModelScope.launch(dispatcher) {
+            newsRepository.observeNews(NewsSource.HN_TOP).collect { news ->
+                _news.value = news
+            }
+        }
+
+        viewModelScope.launch(dispatcher) {
+            logger.info { "Starting refresh..." }
+            val time = System.currentTimeMillis()
+            newsRepository.refreshNews(NewsSource.HN_TOP, 50).collect { percent ->
+                if(percent >= 100f) {
+                    logger.info { "Refresh done, took ${System.currentTimeMillis() - time}ms" }
+                }
+                _progress.value = percent
+            }
+        }
+    }
 
 }

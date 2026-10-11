@@ -21,9 +21,9 @@ private const val FADE_OUT_MILLIS = 1000
 
 @Composable
 fun RefreshProgress(viewModel: FrontPageViewModel = koinViewModel()) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val progress by viewModel.progressState.collectAsStateWithLifecycle()
 
-    val fraction = (state.progress / 100f).coerceIn(0f, 1f)
+    val fraction = (progress / 100f).coerceIn(0f, 1f)
     val done = fraction >= 1f
     val alpha by animateFloatAsState(
         targetValue = if (fraction > 0f && !done) 1f else 0f,
