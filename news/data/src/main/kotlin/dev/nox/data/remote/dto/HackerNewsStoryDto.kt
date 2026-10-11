@@ -17,7 +17,7 @@ data class HackerNewsStoryDto(
     val score: Int? = null,
     val descendants: Int? = null
 ) {
-    fun toEntity() = HackerNewsEntity(
+    fun toEntity(rank: Int) = HackerNewsEntity(
         id = id,
         title = title,
         text = text,
@@ -27,6 +27,7 @@ data class HackerNewsStoryDto(
         storyType = type,
         comments = kids.joinToString(";"),
         score = score,
+        rank = rank,
         descendants = descendants
     )
 }

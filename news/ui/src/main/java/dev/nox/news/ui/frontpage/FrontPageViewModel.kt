@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
+private const val NEWS_COUNT = 30
+
 class FrontPageViewModel(
     newsRepository: NewsRepository,
     private val logger: Logger,
@@ -35,7 +37,7 @@ class FrontPageViewModel(
         viewModelScope.launch(dispatcher) {
             logger.info { "Starting refresh..." }
             val time = System.currentTimeMillis()
-            newsRepository.refreshNews(NewsSource.HN_TOP, 50).collect { percent ->
+            newsRepository.refreshNews(NewsSource.HN_TOP, NEWS_COUNT).collect { percent ->
                 if(percent >= 100f) {
                     logger.info { "Refresh done, took ${System.currentTimeMillis() - time}ms" }
                 }

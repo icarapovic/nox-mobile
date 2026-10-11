@@ -26,6 +26,8 @@ data class HackerNewsEntity(
     val comments: String,
     @ColumnInfo(name = "score")
     val score: Int? = null,
+    @ColumnInfo(name = "rank")
+    val rank: Int,
     @ColumnInfo(name = "descendants")
     val descendants: Int? = null
 ) {

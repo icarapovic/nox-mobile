@@ -47,7 +47,7 @@ class NewsRepositoryImpl(
 
                 ids.asFlow()
                     .flatMapMerge(PARALLEL_STORY_REQUESTS) { id ->
-                        flow { emit(fetchHackerNewsStory(id)) }
+                        flow { emit(fetchHackerNewsStory(id, ids.indexOf(id))) }
                     }
                     .collect { emit(progress(ids.size, ++count)) }
             },
@@ -58,10 +58,11 @@ class NewsRepositoryImpl(
         )
     }
 
-    private suspend fun fetchHackerNewsStory(id: Long): Boolean {
+    private suspend fun fetchHackerNewsStory(id: Long, rank: Int): Boolean {
         return hnApi.fetchStory(id).fold(
             onSuccess = { story ->
-                hnDao.insertStory(story.toEntity())
+                hnDao.deleteOldRankedStory(rank)
+                hnDao.insertStory(story.toEntity(rank))
                 true
             },
             onFailure = {
