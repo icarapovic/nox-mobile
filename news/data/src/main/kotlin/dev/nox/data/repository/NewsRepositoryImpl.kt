@@ -36,11 +36,12 @@ class NewsRepositoryImpl(
 
         result.fold(
             onSuccess = { list ->
-                emit(progress(maxStoriesCount, ++count))
+                val ids = list.take(maxStoriesCount)
+                emit(progress(ids.size, ++count))
 
-                list.take(maxStoriesCount).forEach { id ->
+                ids.forEach { id ->
                     fetchHackerNewsStory(id)
-                    emit(progress(maxStoriesCount, ++count))
+                    emit(progress(ids.size, ++count))
                 }
             },
             onFailure = {
@@ -62,8 +63,8 @@ class NewsRepositoryImpl(
         )
     }
 
-    private fun progress(maxStoriesCount: Int, count: Int): Float {
-        return (((count.toFloat() / (maxStoriesCount + 1f))) * 100.0f)
+    private fun progress(storiesCount: Int, count: Int): Float {
+        return (((count.toFloat() / (storiesCount + 1f))) * 100.0f)
             .coerceIn(0.0f..100.0f)
     }
 
