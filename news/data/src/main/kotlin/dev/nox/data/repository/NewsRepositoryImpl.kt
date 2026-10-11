@@ -5,10 +5,15 @@ import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlin.ranges.rangeTo
+
+private const val PARALLEL_STORY_REQUESTS = 3
 
 class NewsRepositoryImpl(
     private val hnDao: HackerNewsDao,
@@ -21,6 +26,7 @@ class NewsRepositoryImpl(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun refreshNews(source: NewsSource, maxStoriesCount: Int) = flow {
         var count = 0
         emit(0.0f)
@@ -39,10 +45,11 @@ class NewsRepositoryImpl(
                 val ids = list.take(maxStoriesCount)
                 emit(progress(ids.size, ++count))
 
-                ids.forEach { id ->
-                    fetchHackerNewsStory(id)
-                    emit(progress(ids.size, ++count))
-                }
+                ids.asFlow()
+                    .flatMapMerge(PARALLEL_STORY_REQUESTS) { id ->
+                        flow { emit(fetchHackerNewsStory(id)) }
+                    }
+                    .collect { emit(progress(ids.size, ++count)) }
             },
             onFailure = {
                 // processing done due to failure
