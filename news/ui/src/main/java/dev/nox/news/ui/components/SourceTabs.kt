@@ -24,7 +24,7 @@ fun SourceTabs(
 
     PrimaryScrollableTabRow(
         selectedTabIndex = selectedTabIndex.value,
-        edgePadding = 16.dp,
+        edgePadding = 8.dp,
         indicator = {
             TabRowDefaults.PrimaryIndicator(
                 Modifier.tabIndicatorOffset(selectedTabIndex.value, matchContentSize = true),

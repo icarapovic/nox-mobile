@@ -15,10 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.nox.news.ui.components.BookmarkIcon
-import dev.nox.news.ui.components.CategoryHeader
-import dev.nox.news.ui.components.NavigateBackIcon
 import dev.nox.news.ui.components.SearchIcon
 import dev.nox.news.ui.components.SourceTabs
 import dev.nox.news.ui.hn.HackerNewsPage
@@ -42,17 +41,17 @@ class HomeActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             modifier = Modifier
-                                .background(Color.Black)
                                 .fillMaxWidth(),
                             title = {
                                 Text(
-                                    text = DateTimeFormatter.ofPattern("EEEE, MMMM dd").format(LocalDateTime.now()),
+                                    modifier = Modifier.padding(start = 12.dp),
+                                    text = DateTimeFormatter.ofPattern("EEEE, dd. MMMM").format(LocalDateTime.now()),
                                     color = Color.Gray,
                                     fontSize = 16.sp
                                 )
                             },
                             navigationIcon = {
-                                NavigateBackIcon(true) {  }
+                                // NavigateBackIcon(true) {  }
                             },
                             actions = {
                                 BookmarkIcon {  }

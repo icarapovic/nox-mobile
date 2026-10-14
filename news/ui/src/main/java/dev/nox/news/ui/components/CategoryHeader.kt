@@ -22,12 +22,12 @@ fun CategoryHeader(
     title: String
 ) {
     Row (
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier =
             Modifier
-                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .padding(start = 16.dp, end = 12.dp)
                 .size(8.dp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(color)
