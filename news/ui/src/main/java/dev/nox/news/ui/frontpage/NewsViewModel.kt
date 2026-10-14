@@ -15,7 +15,7 @@ import org.koin.core.component.KoinComponent
 
 private const val NEWS_COUNT = 30
 
-class FrontPageViewModel(
+class NewsViewModel(
     newsRepository: NewsRepository,
     private val logger: Logger,
     dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -24,8 +24,11 @@ class FrontPageViewModel(
     private val _news: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val newsState = _news.asStateFlow()
 
+    private val _selectedTabIndex: MutableStateFlow<Int> = MutableStateFlow(0)
+    val selectedTab = _selectedTabIndex.asStateFlow()
+
     private val _progress: MutableStateFlow<Float> = MutableStateFlow(0f)
-        val progressState = _progress.asStateFlow()
+    val progressState = _progress.asStateFlow()
 
     init {
         viewModelScope.launch(dispatcher) {
@@ -44,6 +47,10 @@ class FrontPageViewModel(
                 _progress.value = percent
             }
         }
+    }
+
+    fun setSelectedTab(index: Int) {
+        _selectedTabIndex.value = index
     }
 
 }

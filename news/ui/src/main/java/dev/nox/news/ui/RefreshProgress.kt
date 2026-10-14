@@ -14,13 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.nox.news.ui.frontpage.FrontPageViewModel
+import dev.nox.news.ui.frontpage.NewsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 private const val FADE_OUT_MILLIS = 1000
 
 @Composable
-fun RefreshProgress(viewModel: FrontPageViewModel = koinViewModel()) {
+fun RefreshProgress(viewModel: NewsViewModel = koinViewModel()) {
     val progress by viewModel.progressState.collectAsStateWithLifecycle()
 
     val fraction = (progress / 100f).coerceIn(0f, 1f)

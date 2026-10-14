@@ -8,67 +8,58 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 
 @Composable
-fun Story(story: HackerNewsItem) {
+fun Story(index: Int, story: HackerNewsItem) {
     val context = LocalContext.current
     Column(
-        modifier = Modifier.background(Color.Black).fillMaxWidth()
+        modifier = Modifier
+            .background(Color.Black)
+            .fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp).clickable(onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(story.url))
-                context.startActivity(intent)
-            }),
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 6.dp)
+                .clickable(onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(story.url))
+                    context.startActivity(intent)
+                }),
         ) {
-            AsyncImage(
-                model = faviconUrl(story.url),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp).align(Alignment.CenterVertically),
-                error = painterResource(R.drawable.hn)
+            Text(
+                text = "${index + 1}",
+                color = Color.Gray,
+                fontSize = 12.sp
             )
             Column(
                 modifier = Modifier.padding(start = 16.dp)
             ) {
                 Text(
-                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    letterSpacing = 0.05.sp,
                     fontSize = 15.sp,
-
                     text = story.title
                 )
-                story.url?.let { url ->
-                    Text(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 12.sp,
-                        lineHeight = 10.sp,
-                        color = Color.Gray,
-                        text = url
-                            .replace("https://", "")
-                            .replace("www.", "")
-                            .substringBefore("/"),
-                    )
-                }
+
+                Text(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    lineHeight = 10.sp,
+                    color = Color.Gray,
+                    text = "${story.score} pts"
+                )
+
             }
         }
         //Box(Modifier.height(1.dp).background(Color.DarkGray).fillMaxWidth())
     }
 
-}
-
-fun faviconUrl(pageUrl: String?, size: Int = 64): String? {
-    val host = runCatching { java.net.URI(pageUrl).host }.getOrNull() ?: return null
-    return "https://www.google.com/s2/favicons?domain=$host&sz=$size"
 }

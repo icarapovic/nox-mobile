@@ -8,7 +8,7 @@ import dev.nox.news.ui.Story
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HackerNews(viewModel: FrontPageViewModel = koinViewModel()) {
+fun HackerNews(viewModel: NewsViewModel = koinViewModel()) {
     val news = viewModel.newsState.collectAsStateWithLifecycle().value
 
     LazyColumn {
@@ -18,6 +18,6 @@ fun HackerNews(viewModel: FrontPageViewModel = koinViewModel()) {
                 val story = news[index] as HackerNewsItem
                 story.title + story.url
             }
-        ) { index -> Story(news[index] as HackerNewsItem) }
+        ) { index -> Story(index, news[index] as HackerNewsItem) }
     }
 }
