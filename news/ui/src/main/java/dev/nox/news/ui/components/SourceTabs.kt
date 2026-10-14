@@ -12,14 +12,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.nox.news.ui.frontpage.NewsViewModel
+import dev.nox.news.ui.home.HomeViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SourceTabs(
-    viewModel: NewsViewModel,
-    sourceTabs: List<SourceTab> = SOURCE_TABS,
+    viewModel: HomeViewModel
 ) {
     val selectedTabIndex = viewModel.selectedTab.collectAsStateWithLifecycle()
+    val sourceTabs = SourceTab.entries
 
     PrimaryScrollableTabRow(
         selectedTabIndex = selectedTabIndex.value,
@@ -36,25 +37,14 @@ fun SourceTabs(
             Tab(
                 selected = index == selectedTabIndex.value,
                 onClick = { viewModel.setSelectedTab(index) },
-                text = { Text(
-                    text = source.title,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Black
-                )}
+                text = {
+                    Text(
+                        text = source.title,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                }
             )
         }
     }
 }
-
-data class SourceTab (
-    val title: String,
-    val color: Color
-)
-
-val SOURCE_TABS = listOf(
-    SourceTab("Hacker News", Color(0xFFEA7E15)),
-    SourceTab("GitHub", Color(0xFF79449B)),
-    SourceTab("GitLab", Color(0xFFCA0000)),
-    SourceTab("Codeberg", Color(0xFF16AFF1)),
-    SourceTab("ArsTechnica", Color(0xFFFF5722)),
-)

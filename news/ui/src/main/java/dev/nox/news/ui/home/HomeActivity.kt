@@ -1,12 +1,10 @@
-package dev.nox.news
+package dev.nox.news.ui.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,20 +16,20 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import dev.nox.news.ui.RefreshProgress
 import dev.nox.news.ui.components.BookmarkIcon
+import dev.nox.news.ui.components.CategoryHeader
 import dev.nox.news.ui.components.NavigateBackIcon
 import dev.nox.news.ui.components.SearchIcon
 import dev.nox.news.ui.components.SourceTabs
-import dev.nox.news.ui.frontpage.NewsViewModel
-import dev.nox.news.ui.frontpage.HackerNews
+import dev.nox.news.ui.hn.HackerNewsPage
 import dev.nox.news.ui.theme.NoxTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class NewsActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
 
-    val viewModel: NewsViewModel by viewModels()
+    val viewModel: HomeViewModel by viewModel()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,10 +63,7 @@ class NewsActivity : ComponentActivity() {
                     content = { paddingValues ->
                         Column(modifier = Modifier.padding(paddingValues)) {
                             SourceTabs(viewModel)
-                            Box {
-                                HackerNews()
-                                RefreshProgress()
-                            }
+                            HackerNewsPage()
                         }
                     }
                 )

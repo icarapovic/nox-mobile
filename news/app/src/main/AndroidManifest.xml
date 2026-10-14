@@ -10,7 +10,7 @@
         android:name=".NewsApplication"
         android:theme="@style/Theme.Nox">
         <activity
-            android:name=".NewsActivity"
+            android:name=".ui.home.HomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Nox"

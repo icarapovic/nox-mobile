@@ -1,4 +1,4 @@
-package dev.nox.news.ui.frontpage
+package dev.nox.news.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-private const val NEWS_COUNT = 30
+private const val NEWS_COUNT = 5
 
-class NewsViewModel(
+class HomeViewModel(
     newsRepository: NewsRepository,
     private val logger: Logger,
     dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -26,9 +26,6 @@ class NewsViewModel(
 
     private val _selectedTabIndex: MutableStateFlow<Int> = MutableStateFlow(0)
     val selectedTab = _selectedTabIndex.asStateFlow()
-
-    private val _progress: MutableStateFlow<Float> = MutableStateFlow(0f)
-    val progressState = _progress.asStateFlow()
 
     init {
         viewModelScope.launch(dispatcher) {
@@ -44,7 +41,6 @@ class NewsViewModel(
                 if(percent >= 100f) {
                     logger.info { "Refresh done, took ${System.currentTimeMillis() - time}ms" }
                 }
-                _progress.value = percent
             }
         }
     }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import kotlin.ranges.rangeTo
 
 private const val PARALLEL_STORY_REQUESTS = 3
