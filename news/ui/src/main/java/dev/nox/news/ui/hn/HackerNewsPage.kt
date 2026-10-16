@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
@@ -37,11 +38,19 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HackerNewsPage(
     viewModel: HomeViewModel = koinViewModel()
 ) {
-    HackerNewsCategory(
-        categoryTitle = "Top stories",
-        newsFlow =  viewModel.newsState,
-        onSeeMoreClicked = {}
-    )
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        HackerNewsCategory(
+            categoryTitle = "Top stories",
+            newsFlow =  viewModel.hnTopStories,
+            onSeeMoreClicked = {}
+        )
+
+        HackerNewsCategory(
+            categoryTitle = "New stories",
+            newsFlow =  viewModel.hnNewStories,
+            onSeeMoreClicked = {}
+        )
+    }
 }
 
 @Composable
@@ -56,10 +65,8 @@ fun HackerNewsCategory(
 
     Column {
         CategoryHeader(SourceTab.HACKER_NEWS.color, categoryTitle)
-        LazyColumn {
-            items(count = newsList.take(5).count()) { index ->
-                HackerNewsStoryItem(index, newsList[index] as HackerNewsItem, now)
-            }
+        newsList.take(5).forEachIndexed { index, item ->
+            HackerNewsStoryItem(index, item as HackerNewsItem, now)
         }
         SeeMoreButton(
             title = "See all Top stories",

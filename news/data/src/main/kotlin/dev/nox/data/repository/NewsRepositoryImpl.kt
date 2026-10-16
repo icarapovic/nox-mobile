@@ -23,9 +23,17 @@ class NewsRepositoryImpl(
 ) : NewsRepository {
 
     override fun observeNews(source: NewsSource): Flow<List<NewsItem>> {
-        return hnDao.observeTopStories().map { entityList ->
-            entityList.map { entity -> entity.toDomain() }
+        when(source) {
+            NewsSource.HN_TOP,
+            NewsSource.HN_BEST,
+            NewsSource.HN_NEW,
+            NewsSource.HN_ASK,
+            NewsSource.HN_JOB,
+            NewsSource.HN_SHOW -> return hnDao.observeStories(source.name).map { entityList ->
+                entityList.map { entity -> entity.toDomain() }
+            }
         }
+
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

@@ -10,10 +10,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-private const val NEWS_COUNT = 5
+private const val NEWS_COUNT = 50
 
 class HomeViewModel(
     newsRepository: NewsRepository,
@@ -21,8 +22,10 @@ class HomeViewModel(
     dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel(), KoinComponent {
 
-    private val _news: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
-    val newsState = _news.asStateFlow()
+    private val _hnTopStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val hnTopStories = _hnTopStories.asStateFlow()
+    private val _hnNewStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val hnNewStories = _hnNewStories.asStateFlow()
 
     private val _selectedTabIndex: MutableStateFlow<Int> = MutableStateFlow(0)
     val selectedTab = _selectedTabIndex.asStateFlow()
@@ -30,18 +33,21 @@ class HomeViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             newsRepository.observeNews(NewsSource.HN_TOP).collect { news ->
-                _news.value = news
+                _hnTopStories.value = news
+            }
+        }
+        viewModelScope.launch(dispatcher) {
+            newsRepository.observeNews(NewsSource.HN_NEW).collect { news ->
+                _hnNewStories.value = news
             }
         }
 
         viewModelScope.launch(dispatcher) {
-            logger.info { "Starting refresh..." }
-            val time = System.currentTimeMillis()
-            newsRepository.refreshNews(NewsSource.HN_TOP, NEWS_COUNT).collect { percent ->
-                if(percent >= 100f) {
-                    logger.info { "Refresh done, took ${System.currentTimeMillis() - time}ms" }
-                }
-            }
+            newsRepository.refreshNews(NewsSource.HN_TOP, NEWS_COUNT).collect()
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.refreshNews(NewsSource.HN_NEW, NEWS_COUNT).collect()
         }
     }
 

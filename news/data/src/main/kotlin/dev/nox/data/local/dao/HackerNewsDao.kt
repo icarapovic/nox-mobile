@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HackerNewsDao {
 
-    @Query("SELECT * FROM hacker_news WHERE hacker_news.news_source = 'HN_TOP'")
-    fun observeTopStories(): Flow<List<HackerNewsEntity>>
+    @Query("SELECT * FROM hacker_news WHERE hacker_news.news_source = :source")
+    fun observeStories(source: String): Flow<List<HackerNewsEntity>>
 
     @Transaction
     suspend fun putStory(story: HackerNewsEntity) {
