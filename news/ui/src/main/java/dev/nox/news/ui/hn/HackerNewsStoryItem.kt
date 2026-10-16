@@ -15,16 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import java.time.Duration
+import java.time.Instant
 
 @Composable
-fun HackerNewsStoryItem(index: Int, story: HackerNewsItem) {
+fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
     val context = LocalContext.current
+    val age = Duration.between(Instant.ofEpochSecond(story.timestamp), now).formatAge()
 
     Column(
         modifier = Modifier
@@ -62,7 +63,7 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem) {
                     fontSize = 12.sp,
                     lineHeight = 10.sp,
                     color = Color.Gray,
-                    text = "${story.score} pts · X comments · Xh"
+                    text = "${story.score} pts · ${story.comments.size} comments · $age ago"
                 )
 
             }
@@ -74,3 +75,5 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem) {
     }
 
 }
+private fun Duration.formatAge(): String =
+    if (toHours() < 1) "${toMinutes().coerceAtLeast(0)}m" else "${toHours()}h"

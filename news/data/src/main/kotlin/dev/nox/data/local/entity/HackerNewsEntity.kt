@@ -4,12 +4,15 @@ import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.repository.NewsSource
 
 @Entity(tableName = "hacker_news")
 data class HackerNewsEntity(
     @ColumnInfo(name = "id")
     @PrimaryKey
     val id: Long? = null,
+    @ColumnInfo(name = "news_source")
+    val newsSource: String,
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "description")
@@ -34,6 +37,7 @@ data class HackerNewsEntity(
     fun toDomain() = HackerNewsItem(
         id = this.id ?: 0L,
         title = this.title,
+        newsSource = NewsSource.valueOf(newsSource),
         description = this.text,
         author = this.author,
         timestamp = this.timestamp,

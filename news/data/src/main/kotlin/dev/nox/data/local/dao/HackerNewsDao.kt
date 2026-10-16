@@ -2,6 +2,7 @@ package dev.nox.data.local.dao
 
 import androidx.room3.Dao
 import androidx.room3.Query
+import androidx.room3.Transaction
 import androidx.room3.Upsert
 import dev.nox.data.local.entity.HackerNewsEntity
 import kotlinx.coroutines.flow.Flow
@@ -9,12 +10,18 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HackerNewsDao {
 
-    @Query("SELECT * FROM hacker_news ORDER BY hacker_news.rank ASC")
+    @Query("SELECT * FROM hacker_news WHERE hacker_news.news_source = 'HN_TOP'")
     fun observeTopStories(): Flow<List<HackerNewsEntity>>
 
-    @Upsert
-    suspend fun insertStory(topStory: HackerNewsEntity)
+    @Transaction
+    suspend fun putStory(story: HackerNewsEntity) {
+        deleteStoryAtRank(story.newsSource, story.rank)
+        upsertStory(story)
+    }
 
-    @Query("DELETE FROM hacker_news WHERE rank = :rank")
-    fun deleteOldRankedStory(rank: Int)
+    @Upsert
+    suspend fun upsertStory(story: HackerNewsEntity)
+
+    @Query("DELETE FROM hacker_news WHERE hacker_news.news_source = :source AND hacker_news.rank = :rank")
+    suspend fun deleteStoryAtRank(source: String, rank: Int)
 }

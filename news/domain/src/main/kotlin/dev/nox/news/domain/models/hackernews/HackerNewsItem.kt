@@ -1,10 +1,12 @@
 package dev.nox.news.domain.models.hackernews
 
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.repository.NewsSource
 
 data class HackerNewsItem (
-    val id: Long,
-    val title: String,
+    override val id: Long,
+    override val title: String,
+    override val newsSource: NewsSource,
     val description: String?,
     val author: String,
     val timestamp: Long,

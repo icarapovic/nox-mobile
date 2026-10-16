@@ -2,6 +2,7 @@ package dev.nox.data.repository
 
 import dev.nox.data.local.dao.HackerNewsDao
 import dev.nox.data.remote.client.HackerNewsClient
+import dev.nox.data.remote.dto.HackerNewsStoryDto
 import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
@@ -45,10 +46,9 @@ class NewsRepositoryImpl(
             onSuccess = { list ->
                 val ids = list.take(maxStoriesCount)
                 emit(progress(ids.size, ++count))
-
                 ids.asFlow()
                     .flatMapMerge(PARALLEL_STORY_REQUESTS) { id ->
-                        flow { emit(fetchHackerNewsStory(id, ids.indexOf(id))) }
+                        flow { emit(fetchHackerNewsStory(id, source, ids.indexOf(id))) }
                     }
                     .collect { emit(progress(ids.size, ++count)) }
             },
@@ -59,11 +59,10 @@ class NewsRepositoryImpl(
         )
     }
 
-    private suspend fun fetchHackerNewsStory(id: Long, rank: Int): Boolean {
+    private suspend fun fetchHackerNewsStory(id: Long, newsSource: NewsSource, rank: Int): Boolean {
         return hnApi.fetchStory(id).fold(
             onSuccess = { story ->
-                hnDao.deleteOldRankedStory(rank)
-                hnDao.insertStory(story.toEntity(rank))
+                hnDao.putStory(story.toEntity(newsSource, rank))
                 true
             },
             onFailure = {
