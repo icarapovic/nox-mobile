@@ -35,7 +35,13 @@ data class HackerNewsEntity(
         id = this.id ?: 0L,
         title = this.title,
         description = this.text,
+        author = this.author,
+        timestamp = this.timestamp,
         url = this.url,
+        storyType = this.storyType,
+        comments = this.comments.split(";").mapNotNull { it.toLongOrNull() },
         score = this.score ?: 0,
+        rank = this.rank,
+        descendants = this.descendants ?: 0,
     )
 }
