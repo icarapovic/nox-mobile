@@ -27,6 +27,9 @@ class HomeViewModel(
     private val _hnNewStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val hnNewStories = _hnNewStories.asStateFlow()
 
+    private val _hnBestStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val hnBestStories = _hnBestStories.asStateFlow()
+
     private val _selectedTabIndex: MutableStateFlow<Int> = MutableStateFlow(0)
     val selectedTab = _selectedTabIndex.asStateFlow()
 
@@ -43,11 +46,21 @@ class HomeViewModel(
         }
 
         viewModelScope.launch(dispatcher) {
+            newsRepository.observeNews(NewsSource.HN_BEST).collect { news ->
+                _hnBestStories.value = news
+            }
+        }
+
+        viewModelScope.launch(dispatcher) {
             newsRepository.refreshNews(NewsSource.HN_TOP, NEWS_COUNT).collect()
         }
 
         viewModelScope.launch(dispatcher) {
             newsRepository.refreshNews(NewsSource.HN_NEW, NEWS_COUNT).collect()
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.refreshNews(NewsSource.HN_BEST, NEWS_COUNT).collect()
         }
     }
 

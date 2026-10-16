@@ -41,13 +41,22 @@ fun HackerNewsPage(
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         HackerNewsCategory(
             categoryTitle = "Top stories",
+            moreButtonText = "See more Top stories",
             newsFlow =  viewModel.hnTopStories,
             onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
             categoryTitle = "New stories",
+            moreButtonText = "See more New stories",
             newsFlow =  viewModel.hnNewStories,
+            onSeeMoreClicked = {}
+        )
+
+        HackerNewsCategory(
+            categoryTitle = "Best stories",
+            moreButtonText = "See more Best stories",
+            newsFlow =  viewModel.hnBestStories,
             onSeeMoreClicked = {}
         )
     }
@@ -56,6 +65,7 @@ fun HackerNewsPage(
 @Composable
 fun HackerNewsCategory(
     categoryTitle: String,
+    moreButtonText: String,
     newsFlow: StateFlow<List<NewsItem>>,
     onSeeMoreClicked: () -> Unit
 ) {
@@ -69,7 +79,7 @@ fun HackerNewsCategory(
             HackerNewsStoryItem(index, item as HackerNewsItem, now)
         }
         SeeMoreButton(
-            title = "See all Top stories",
+            title = moreButtonText,
             onSeeMoreClicked = onSeeMoreClicked
         )
     }
