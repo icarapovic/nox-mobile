@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-private const val NEWS_COUNT = 50
+private const val NEWS_COUNT = 5
 
 class HomeViewModel(
     newsRepository: NewsRepository,
@@ -29,6 +29,15 @@ class HomeViewModel(
 
     private val _hnBestStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val hnBestStories = _hnBestStories.asStateFlow()
+
+    private val _hnAskStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val hnAskStories = _hnAskStories.asStateFlow()
+
+    private val _hnShowStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val hnShowStories = _hnShowStories.asStateFlow()
+
+    private val _hnJobsStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
+    val hnJobsStories = _hnJobsStories.asStateFlow()
 
     private val _selectedTabIndex: MutableStateFlow<Int> = MutableStateFlow(0)
     val selectedTab = _selectedTabIndex.asStateFlow()
@@ -52,6 +61,24 @@ class HomeViewModel(
         }
 
         viewModelScope.launch(dispatcher) {
+            newsRepository.observeNews(NewsSource.HN_ASK).collect { news ->
+                _hnAskStories.value = news
+            }
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.observeNews(NewsSource.HN_SHOW).collect { news ->
+                _hnShowStories.value = news
+            }
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.observeNews(NewsSource.HN_JOB).collect { news ->
+                _hnJobsStories.value = news
+            }
+        }
+
+        viewModelScope.launch(dispatcher) {
             newsRepository.refreshNews(NewsSource.HN_TOP, NEWS_COUNT).collect()
         }
 
@@ -61,6 +88,18 @@ class HomeViewModel(
 
         viewModelScope.launch(dispatcher) {
             newsRepository.refreshNews(NewsSource.HN_BEST, NEWS_COUNT).collect()
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.refreshNews(NewsSource.HN_ASK, NEWS_COUNT).collect()
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.refreshNews(NewsSource.HN_SHOW, NEWS_COUNT).collect()
+        }
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.refreshNews(NewsSource.HN_JOB, NEWS_COUNT).collect()
         }
     }
 

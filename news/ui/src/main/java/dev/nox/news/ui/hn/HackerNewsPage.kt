@@ -40,23 +40,44 @@ fun HackerNewsPage(
 ) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         HackerNewsCategory(
-            categoryTitle = "Top stories",
+            categoryTitle = "Top",
             moreButtonText = "See more Top stories",
             newsFlow =  viewModel.hnTopStories,
             onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
-            categoryTitle = "New stories",
+            categoryTitle = "New",
             moreButtonText = "See more New stories",
             newsFlow =  viewModel.hnNewStories,
             onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
-            categoryTitle = "Best stories",
+            categoryTitle = "Best",
             moreButtonText = "See more Best stories",
             newsFlow =  viewModel.hnBestStories,
+            onSeeMoreClicked = {}
+        )
+
+        HackerNewsCategory(
+            categoryTitle = "Ask",
+            moreButtonText = "See more questions",
+            newsFlow =  viewModel.hnAskStories,
+            onSeeMoreClicked = {}
+        )
+
+        HackerNewsCategory(
+            categoryTitle = "Show",
+            moreButtonText = "See more works",
+            newsFlow =  viewModel.hnShowStories,
+            onSeeMoreClicked = {}
+        )
+
+        HackerNewsCategory(
+            categoryTitle = "Jobs",
+            moreButtonText = "See more jobs",
+            newsFlow =  viewModel.hnJobsStories,
             onSeeMoreClicked = {}
         )
     }
