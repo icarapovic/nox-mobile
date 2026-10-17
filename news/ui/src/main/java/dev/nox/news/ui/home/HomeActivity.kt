@@ -69,4 +69,9 @@ class HomeActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshNewsOnResume()
+    }
 }

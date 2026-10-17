@@ -30,16 +30,16 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
     Column(
         modifier = Modifier
             .background(Color.Black)
-            .padding(start = 12.dp, top = 8.dp)
             .fillMaxWidth()
+            .clickable(onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(story.url))
+                context.startActivity(intent)
+            })
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .clickable(onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(story.url))
-                    context.startActivity(intent)
-                }),
+                .padding(
+                    start = 32.dp, top = 8.dp)
         ) {
             Text(
                 text = "${index + 1}",

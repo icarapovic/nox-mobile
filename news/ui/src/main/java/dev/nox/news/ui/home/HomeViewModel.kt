@@ -13,14 +13,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.TimeMark
+import kotlin.time.TimeSource
 
 private const val NEWS_COUNT = 5
+private val RESUME_REFRESH_INTERVAL = 10.minutes
 
 class HomeViewModel(
-    newsRepository: NewsRepository,
+    private val newsRepository: NewsRepository,
     private val logger: Logger,
-    dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val timeSource: TimeSource = TimeSource.Monotonic
 ) : ViewModel(), KoinComponent {
+
+    private var lastRefresh: TimeMark? = null
 
     private val _hnTopStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val hnTopStories = _hnTopStories.asStateFlow()
@@ -78,28 +85,24 @@ class HomeViewModel(
             }
         }
 
-        viewModelScope.launch(dispatcher) {
-            newsRepository.refreshNews(NewsSource.HN_TOP, NEWS_COUNT).collect()
-        }
+    }
 
-        viewModelScope.launch(dispatcher) {
-            newsRepository.refreshNews(NewsSource.HN_NEW, NEWS_COUNT).collect()
-        }
+    /**
+     * Refreshes news unless the last refresh started less than
+     * [RESUME_REFRESH_INTERVAL] ago
+     * */
+    fun refreshNewsOnResume() {
+        val elapsed = lastRefresh?.elapsedNow()
+        if (elapsed != null && elapsed < RESUME_REFRESH_INTERVAL) return
+        refreshNews()
+    }
 
-        viewModelScope.launch(dispatcher) {
-            newsRepository.refreshNews(NewsSource.HN_BEST, NEWS_COUNT).collect()
-        }
-
-        viewModelScope.launch(dispatcher) {
-            newsRepository.refreshNews(NewsSource.HN_ASK, NEWS_COUNT).collect()
-        }
-
-        viewModelScope.launch(dispatcher) {
-            newsRepository.refreshNews(NewsSource.HN_SHOW, NEWS_COUNT).collect()
-        }
-
-        viewModelScope.launch(dispatcher) {
-            newsRepository.refreshNews(NewsSource.HN_JOB, NEWS_COUNT).collect()
+    fun refreshNews() {
+        lastRefresh = timeSource.markNow()
+        NewsSource.entries.forEach { source ->
+            viewModelScope.launch(dispatcher) {
+                newsRepository.refreshNews(source, NEWS_COUNT).collect()
+            }
         }
     }
 
