@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-private const val NEWS_COUNT = 5
+private const val NEWS_COUNT = 50
 private val RESUME_REFRESH_INTERVAL = 10.minutes
 
 class HomeViewModel(
@@ -45,9 +45,6 @@ class HomeViewModel(
 
     private val _hnJobsStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val hnJobsStories = _hnJobsStories.asStateFlow()
-
-    private val _selectedTabIndex: MutableStateFlow<Int> = MutableStateFlow(0)
-    val selectedTab = _selectedTabIndex.asStateFlow()
 
     init {
         viewModelScope.launch(dispatcher) {
@@ -104,10 +101,6 @@ class HomeViewModel(
                 newsRepository.refreshNews(source, NEWS_COUNT).collect()
             }
         }
-    }
-
-    fun setSelectedTab(index: Int) {
-        _selectedTabIndex.value = index
     }
 
 }

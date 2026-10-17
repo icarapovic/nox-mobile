@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.nox.news.ui.components.BookmarkIcon
 import dev.nox.news.ui.components.SearchIcon
-import dev.nox.news.ui.components.SourceTabs
-import dev.nox.news.ui.hn.HackerNewsPage
 import dev.nox.news.ui.theme.NoxTheme
 import dev.nox.news.ui.theme.PlexMono
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -62,8 +60,7 @@ class HomeActivity : ComponentActivity() {
                     },
                     content = { paddingValues ->
                         Column(modifier = Modifier.padding(paddingValues)) {
-                            SourceTabs(viewModel)
-                            HackerNewsPage()
+                            HomeActivityViewPager(viewModel)
                         }
                     }
                 )
