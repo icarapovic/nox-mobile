@@ -16,6 +16,8 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import dev.nox.news.ui.nav.LocalNavBackStack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +61,8 @@ fun SearchIcon(onClick: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigateBackIcon(isTopLevelNav: Boolean, onClick: () -> Unit) {
+fun NavigateBackIcon() {
+    val backStack = LocalNavBackStack.current
     TooltipBox(
         positionProvider =
             TooltipDefaults.rememberTooltipPositionProvider(
@@ -69,10 +72,13 @@ fun NavigateBackIcon(isTopLevelNav: Boolean, onClick: () -> Unit) {
         state = rememberTooltipState(),
     ) {
         IconButton(
-            modifier = Modifier.visible(!isTopLevelNav),
-            onClick = onClick
+            onClick = { backStack.removeLastOrNull() }
         ) {
-            Icon(imageVector = Icons.Filled.ArrowBackIosNew, contentDescription = "Menu")
+            Icon(
+                imageVector = Icons.Filled.ArrowBackIosNew,
+                contentDescription = "Menu",
+                tint = Color.White
+            )
         }
     }
 }

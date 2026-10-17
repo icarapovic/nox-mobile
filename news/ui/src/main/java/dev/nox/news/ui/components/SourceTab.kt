@@ -2,7 +2,7 @@ package dev.nox.news.ui.components
 
 import androidx.compose.ui.graphics.Color
 
-enum class SourceTab(
+enum class SourceTab (
     val title: String,
     val color: Color
 ) {

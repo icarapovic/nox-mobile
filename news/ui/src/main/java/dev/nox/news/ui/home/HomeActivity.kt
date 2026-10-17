@@ -4,66 +4,43 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.nox.news.ui.components.BookmarkIcon
-import dev.nox.news.ui.components.SearchIcon
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import dev.nox.news.ui.hn.HackerNewsMorePage
+import dev.nox.news.ui.nav.CategoryMorePageNavKey
+import dev.nox.news.ui.nav.HomeScreenNavKey
+import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.NoxTheme
-import dev.nox.news.ui.theme.PlexMono
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class HomeActivity : ComponentActivity() {
 
     val viewModel: HomeViewModel by viewModel()
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             NoxTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        TopAppBar(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            title = {
-                                Text(
-                                    modifier = Modifier.padding(start = 12.dp),
-                                    text = DateTimeFormatter.ofPattern("EEEE, dd. MMMM").format(LocalDateTime.now()),
-                                    color = Color.Gray,
-                                    fontFamily = PlexMono,
-                                    fontSize = 16.sp
-                                )
-                            },
-                            navigationIcon = {
-                                // NavigateBackIcon(true) {  }
-                            },
-                            actions = {
-                                BookmarkIcon {  }
-                                SearchIcon {  }
-                            }
-                        )
-                    },
-                    content = { paddingValues ->
-                        Column(modifier = Modifier.padding(paddingValues)) {
-                            HomeActivityViewPager(viewModel)
+                val backStack = rememberNavBackStack(HomeScreenNavKey)
+                CompositionLocalProvider(LocalNavBackStack provides backStack) {
+                    NavDisplay(
+                        backStack = backStack,
+                        onBack = { backStack.removeLastOrNull() },
+                        entryDecorators = listOf(
+                            rememberSaveableStateHolderNavEntryDecorator(),
+                            rememberViewModelStoreNavEntryDecorator()
+                        ),
+                        entryProvider = entryProvider {
+                            entry<HomeScreenNavKey> { HomeScreen() }
+                            entry<CategoryMorePageNavKey> { HackerNewsMorePage(it.newsSource) }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

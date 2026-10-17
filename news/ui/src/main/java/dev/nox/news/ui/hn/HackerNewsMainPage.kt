@@ -27,9 +27,12 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.repository.NewsSource
 import dev.nox.news.ui.components.CategoryHeader
 import dev.nox.news.ui.components.SourceTab
 import dev.nox.news.ui.home.HomeViewModel
+import dev.nox.news.ui.nav.CategoryMorePageNavKey
+import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexSans
 import kotlinx.coroutines.flow.StateFlow
 import java.time.Instant
@@ -41,56 +44,57 @@ fun HackerNewsPage(
 ) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         HackerNewsCategory(
+            source = NewsSource.HN_TOP,
             categoryTitle = "Top",
             moreButtonText = "See more Top stories",
             newsFlow =  viewModel.hnTopStories,
-            onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
+            source = NewsSource.HN_NEW,
             categoryTitle = "New",
             moreButtonText = "See more New stories",
             newsFlow =  viewModel.hnNewStories,
-            onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
+            source = NewsSource.HN_BEST,
             categoryTitle = "Best",
             moreButtonText = "See more Best stories",
             newsFlow =  viewModel.hnBestStories,
-            onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
+            source = NewsSource.HN_ASK,
             categoryTitle = "Ask",
             moreButtonText = "See more questions",
             newsFlow =  viewModel.hnAskStories,
-            onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
+            source = NewsSource.HN_SHOW,
             categoryTitle = "Show",
             moreButtonText = "See more works",
             newsFlow =  viewModel.hnShowStories,
-            onSeeMoreClicked = {}
         )
 
         HackerNewsCategory(
+            source = NewsSource.HN_JOB,
             categoryTitle = "Jobs",
             moreButtonText = "See more jobs",
             newsFlow =  viewModel.hnJobsStories,
-            onSeeMoreClicked = {}
         )
     }
 }
 
 @Composable
 fun HackerNewsCategory(
+    source: NewsSource,
     categoryTitle: String,
     moreButtonText: String,
     newsFlow: StateFlow<List<NewsItem>>,
-    onSeeMoreClicked: () -> Unit
 ) {
+    val backStack = LocalNavBackStack.current
     val newsList = newsFlow.collectAsStateWithLifecycle().value
     var now by remember { mutableStateOf(Instant.now()) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { now = Instant.now() }
@@ -102,7 +106,9 @@ fun HackerNewsCategory(
         }
         SeeMoreButton(
             title = moreButtonText,
-            onSeeMoreClicked = onSeeMoreClicked
+            onSeeMoreClicked = {
+                backStack.add(CategoryMorePageNavKey(source))
+            }
         )
     }
 }
