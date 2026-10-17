@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.koin.annotations)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.navigation)
+    implementation(libs.koin.compose.navigation3)
     implementation(libs.koin.compose.workmanager)
 
     implementation(platform(libs.androidx.compose.bom))
@@ -43,6 +44,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
