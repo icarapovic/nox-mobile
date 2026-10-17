@@ -30,6 +30,7 @@ import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.ui.components.CategoryHeader
 import dev.nox.news.ui.components.SourceTab
 import dev.nox.news.ui.home.HomeViewModel
+import dev.nox.news.ui.theme.PlexSans
 import kotlinx.coroutines.flow.StateFlow
 import java.time.Instant
 import org.koin.compose.viewmodel.koinViewModel
@@ -122,6 +123,7 @@ fun SeeMoreButton(
                 Text(
                     text = title,
                     color = Color.White,
+                    fontFamily = PlexSans,
                     fontSize = 14.sp
                 )
                 Icon(

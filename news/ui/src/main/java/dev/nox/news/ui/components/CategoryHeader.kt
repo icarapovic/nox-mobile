@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.nox.news.ui.theme.PlexMono
+import dev.nox.news.ui.theme.PlexSans
 
 @Composable
 fun CategoryHeader(
@@ -35,6 +37,7 @@ fun CategoryHeader(
         Text(
             text = title,
             color = Color.White,
+            fontFamily = PlexSans,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )

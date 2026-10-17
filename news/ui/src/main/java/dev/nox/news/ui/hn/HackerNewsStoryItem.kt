@@ -15,10 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.ui.theme.PlexMono
+import dev.nox.news.ui.theme.PlexSans
+import dev.nox.news.ui.theme.PlexSansCondensed
 import java.time.Duration
 import java.time.Instant
 
@@ -43,6 +47,7 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
         ) {
             Text(
                 text = "${index + 1}",
+                fontFamily = PlexMono,
                 color = Color.Gray,
                 fontSize = 14.sp,
             )
@@ -52,6 +57,7 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
                 Text(
                     color = Color.White,
                     letterSpacing = 0.sp,
+                    fontFamily = PlexSans,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                     text = story.title
@@ -60,6 +66,7 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
                 Text(
                     modifier = Modifier.padding(top = 6.dp, bottom = 12.dp),
                     fontWeight = FontWeight.Normal,
+                    fontFamily = PlexMono,
                     fontSize = 12.sp,
                     lineHeight = 10.sp,
                     color = Color.Gray,

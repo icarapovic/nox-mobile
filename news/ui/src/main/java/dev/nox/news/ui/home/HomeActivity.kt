@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +21,7 @@ import dev.nox.news.ui.components.SearchIcon
 import dev.nox.news.ui.components.SourceTabs
 import dev.nox.news.ui.hn.HackerNewsPage
 import dev.nox.news.ui.theme.NoxTheme
+import dev.nox.news.ui.theme.PlexMono
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -47,6 +47,7 @@ class HomeActivity : ComponentActivity() {
                                     modifier = Modifier.padding(start = 12.dp),
                                     text = DateTimeFormatter.ofPattern("EEEE, dd. MMMM").format(LocalDateTime.now()),
                                     color = Color.Gray,
+                                    fontFamily = PlexMono,
                                     fontSize = 16.sp
                                 )
                             },
