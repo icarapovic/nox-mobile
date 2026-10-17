@@ -1,7 +1,6 @@
 package dev.nox.data.remote.dto
 
-import dev.nox.data.local.entity.HackerNewsEntity
-import dev.nox.news.domain.repository.NewsSource
+import dev.nox.data.local.entity.HackerNewsStoryEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,9 +17,8 @@ data class HackerNewsStoryDto(
     val score: Int? = null,
     val descendants: Int? = null
 ) {
-    fun toEntity(newsSource: NewsSource, rank: Int) = HackerNewsEntity(
+    fun toStoryEntity() = HackerNewsStoryEntity(
         id = id,
-        newsSource = newsSource.name,
         title = title,
         text = text,
         author = by,
@@ -29,7 +27,6 @@ data class HackerNewsStoryDto(
         storyType = type,
         comments = kids.joinToString(";"),
         score = score,
-        rank = rank,
         descendants = descendants
     )
 }
