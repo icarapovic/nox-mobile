@@ -5,6 +5,8 @@ import androidx.room3.Insert
 import androidx.room3.Query
 import androidx.room3.Transaction
 import androidx.room3.Upsert
+import dev.nox.data.local.entity.HackerNewsCommentEntity
+import dev.nox.data.local.entity.HackerNewsCommentFetchEntity
 import dev.nox.data.local.entity.HackerNewsRankingEntity
 import dev.nox.data.local.entity.HackerNewsStoryEntity
 import dev.nox.data.local.model.HackerNewsRankedStoryEntity
@@ -66,6 +68,41 @@ interface HackerNewsDao {
     @Query("DELETE FROM hn_ranking WHERE news_source = :source")
     suspend fun deleteRankings(source: String)
 
+    // cascades to the story's cached comments
     @Query("DELETE FROM hn_story WHERE id NOT IN (SELECT story_id FROM hn_ranking)")
     suspend fun deleteUnrankedStories()
+
+    @Query("SELECT * FROM hn_comment WHERE story_id = :storyId ORDER BY position ASC")
+    fun observeComments(storyId: Long): Flow<List<HackerNewsCommentEntity>>
+
+    @Query("SELECT fetched_at FROM hn_comment_fetch WHERE story_id = :storyId")
+    suspend fun getCommentsFetchedAt(storyId: Long): Long?
+
+    /**
+     * Atomically replaces all cached comments of [storyId]. Skipped if the
+     * story is no longer cached, as the comments would violate the foreign key
+     * */
+    @Transaction
+    suspend fun replaceComments(
+        storyId: Long,
+        comments: List<HackerNewsCommentEntity>,
+        fetchedAt: Long
+    ) {
+        if (!storyExists(storyId)) return
+        deleteComments(storyId)
+        insertComments(comments)
+        upsertCommentFetch(HackerNewsCommentFetchEntity(storyId = storyId, fetchedAt = fetchedAt))
+    }
+
+    @Query("SELECT EXISTS(SELECT 1 FROM hn_story WHERE id = :storyId)")
+    suspend fun storyExists(storyId: Long): Boolean
+
+    @Query("DELETE FROM hn_comment WHERE story_id = :storyId")
+    suspend fun deleteComments(storyId: Long)
+
+    @Insert
+    suspend fun insertComments(comments: List<HackerNewsCommentEntity>)
+
+    @Upsert
+    suspend fun upsertCommentFetch(fetch: HackerNewsCommentFetchEntity)
 }

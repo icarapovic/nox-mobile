@@ -31,5 +31,11 @@ interface NewsRepository {
 
     fun getHackerNewsStory(source: NewsSource, id: Long) : Flow<HackerNewsItem?>
 
-    fun getHackerNewsComments(ids: List<Long>): Flow<List<HackerNewsComment>>
+    /**
+     * Fetches all comments of a story as a flat list in thread order
+     *
+     * @param storyId id of the story whose comments to load
+     * @return the comments, or an empty list if fetching failed
+     * */
+    fun getHackerNewsComments(storyId: Long): Flow<List<HackerNewsComment>>
 }

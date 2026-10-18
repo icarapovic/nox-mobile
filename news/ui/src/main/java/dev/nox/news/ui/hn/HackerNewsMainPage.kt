@@ -43,6 +43,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HackerNewsPage(
     viewModel: HomeViewModel = koinViewModel()
 ) {
+
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         HackerNewsCategory(
             source = NewsSource.HN_TOP,
@@ -94,7 +95,9 @@ fun HackerNewsCategory(
     categoryTitle: String,
     moreButtonText: String,
     newsFlow: StateFlow<List<NewsItem>>,
+    viewModel: HomeViewModel = koinViewModel()
 ) {
+    val storyCount = viewModel.categoryStoryCount.collectAsStateWithLifecycle().value
     val backStack = LocalNavBackStack.current
     val newsList = newsFlow.collectAsStateWithLifecycle().value
     var now by remember { mutableStateOf(Instant.now()) }
@@ -102,7 +105,7 @@ fun HackerNewsCategory(
 
     Column {
         ColoredDotHeader(SourceTab.HACKER_NEWS.color, categoryTitle)
-        newsList.take(5).forEachIndexed { index, item ->
+        newsList.take(storyCount).forEachIndexed { index, item ->
             HackerNewsStoryItem(index, source, item as HackerNewsItem, now)
         }
         SeeMoreButton(

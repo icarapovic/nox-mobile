@@ -12,17 +12,23 @@ import dev.nox.news.domain.repository.NewsSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
 
 private const val PARALLEL_STORY_REQUESTS = 3
+private val COMMENTS_CACHE_TTL = 10.minutes
 
 class NewsRepositoryImpl(
     private val hnDao: HackerNewsDao,
     private val hnApi: HackerNewsClient,
-    private val algoliaApi: AlgoliaClient
+    private val algoliaApi: AlgoliaClient,
+    private val clock: Clock = Clock.System
 ) : NewsRepository {
 
     override fun observeNews(source: NewsSource): Flow<List<NewsItem>> {
@@ -103,29 +109,31 @@ class NewsRepositoryImpl(
         emit(hnDao.getStory(source.name, id)?.toDomain())
     }
 
-    override fun getHackerNewsComments(ids: List<Long>) = flow {
-        val commentList = mutableListOf<HackerNewsComment>()
-        recursivelyFetchComments(ids, commentList)
-        emit(commentList)
+    /**
+     * Emits cached comments right away and refreshes them in the
+     * background if they are older than [COMMENTS_CACHE_TTL]
+     * */
+    override fun getHackerNewsComments(storyId: Long): Flow<List<HackerNewsComment>> = channelFlow {
+        launch { refreshCommentsIfStale(storyId) }
+        hnDao.observeComments(storyId)
+            .distinctUntilChanged()
+            .collect { entityList -> send(entityList.map { entity -> entity.toDomain() }) }
+    }
+
+    private suspend fun refreshCommentsIfStale(storyId: Long) {
+        val now = clock.now().toEpochMilliseconds()
+        val fetchedAt = hnDao.getCommentsFetchedAt(storyId)
+        if (fetchedAt != null && now - fetchedAt < COMMENTS_CACHE_TTL.inWholeMilliseconds) return
+
+        // on failure the cache is left untouched
+        algoliaApi.fetchItem(storyId).onSuccess { item ->
+            hnDao.replaceComments(storyId, item.toCommentEntities(), now)
+        }
     }
 
     private fun progress(steps: Int, count: Int): Float {
         return ((count.toFloat() / steps) * 100.0f)
             .coerceIn(0.0f..100.0f)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private suspend fun recursivelyFetchComments(ids: List<Long>, commentList: MutableList<HackerNewsComment>) {
-        ids.asFlow().flatMapMerge(PARALLEL_STORY_REQUESTS) { id ->
-            flow { emit(hnApi.fetchComment(id).getOrNull()) }
-        }.collect { c ->
-            c?.let { comment ->
-                commentList.add(comment.toDomain())
-                if(comment.kids.isNotEmpty()) {
-                    recursivelyFetchComments(comment.kids, commentList)
-                }
-            }
-        }
     }
 
 }

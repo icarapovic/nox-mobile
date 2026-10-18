@@ -1,6 +1,5 @@
 package dev.nox.data.remote.client
 
-import dev.nox.data.remote.dto.HackerNewsCommentDto
 import dev.nox.data.remote.dto.HackerNewsStoryDto
 import dev.nox.news.domain.exceptions.DataFetchingException
 import dev.nox.news.domain.exceptions.NoInternetException
@@ -94,17 +93,6 @@ class HackerNewsClient (
     suspend fun fetchJobStories(): Result<List<Long>> {
         try {
             val story = retrofitClient.fetchJobStories()
-            return Result.success(story)
-        } catch (e: HttpException) {
-            return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))
-        } catch (e: IOException) {
-            return Result.failure(NoInternetException(e.message))
-        }
-    }
-
-    suspend fun fetchComment(commentId: Long): Result<HackerNewsCommentDto> {
-        try {
-            val story = retrofitClient.fetchComment(commentId)
             return Result.success(story)
         } catch (e: HttpException) {
             return Result.failure(DataFetchingException("HTTP ${e.code()}: ${e.message()}"))

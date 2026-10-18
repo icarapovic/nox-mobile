@@ -10,7 +10,7 @@ import org.koin.dsl.module
 import retrofit2.Converter
 
 val networkModule = module {
-    single<Interceptor> { HttpLoggingInterceptor().apply { level = Level.NONE } }
+    single<Interceptor> { HttpLoggingInterceptor().apply { level = Level.BODY } }
     single<Converter.Factory> { ConverterFactoryProviderImpl().provideConverterFactory() }
     single<OkHttpClient> { OkHttpProviderImpl(get()).provideOkHttp() }
 }

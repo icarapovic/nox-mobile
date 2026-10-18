@@ -3,9 +3,6 @@ package dev.nox.news.ui.pages
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,16 +31,14 @@ import java.time.Duration
 import java.time.Instant
 
 @Composable
-fun HnDetailsPageStory(hnStory: NewsItem) {
+fun HnStoryDetailPage(hnStory: NewsItem) {
 
     val story = hnStory as HackerNewsItem
 
     var now by remember { mutableStateOf(Instant.now()) }
     val age = Duration.between(Instant.ofEpochSecond(story.timestamp), now).formatAge()
 
-    Column(
-        modifier = Modifier.verticalScroll(rememberScrollState())
-    ) {
+    Column {
         ColoredDotHeader(
             color = story.newsSource.color(),
             title = "${story.newsSource.sourceTitle()} · ${story.newsSource.categoryTitle()}",

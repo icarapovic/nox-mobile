@@ -51,6 +51,9 @@ class HomeViewModel(
     private val _hnJobsStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val hnJobsStories = _hnJobsStories.asStateFlow()
 
+    private val _categoryStoryCount = MutableStateFlow(5)
+    val categoryStoryCount = _categoryStoryCount.asStateFlow()
+
     init {
         viewModelScope.launch(dispatcher) {
             newsRepository.observeNews(NewsSource.HN_TOP).collect { news ->
@@ -112,8 +115,8 @@ class HomeViewModel(
         return newsRepository.getHackerNewsStory(source, id)
     }
 
-    fun getHackerNewsComments(ids: List<Long>): Flow<List<HackerNewsComment>> {
-        return newsRepository.getHackerNewsComments(ids)
+    fun getHackerNewsComments(storyId: Long): Flow<List<HackerNewsComment>> {
+        return newsRepository.getHackerNewsComments(storyId)
     }
 
 }

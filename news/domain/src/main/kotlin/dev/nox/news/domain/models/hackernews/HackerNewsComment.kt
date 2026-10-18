@@ -6,5 +6,5 @@ data class HackerNewsComment (
     val by: String? = null,
     val time: Long,
     val parent: Long?,
-    val kids: List<Long> = listOf()
+    val depth: Int
 )
