@@ -1,6 +1,10 @@
 package dev.nox.news.ui.hn
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -34,7 +38,9 @@ fun HackerNewsMorePage(
     }.value
     var now by remember { mutableStateOf(Instant.now()) }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
+    ) {
         MorePageHeader(newsSource)
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())

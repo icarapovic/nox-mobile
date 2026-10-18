@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,9 +29,7 @@ fun MorePageHeader(
     newsSource: NewsSource,
 ) {
 
-    Column(
-        modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
-    ) {
+    Column {
         Row (
             modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
