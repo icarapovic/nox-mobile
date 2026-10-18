@@ -1,10 +1,14 @@
 package dev.nox.news.ui.components
 
-import androidx.compose.foundation.layout.visible
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.ArrowBackIosNew
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -15,7 +19,6 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import dev.nox.news.ui.nav.LocalNavBackStack
 
@@ -32,8 +35,9 @@ fun BookmarkIcon(onClick: () -> Unit) {
     ) {
         IconButton(onClick = onClick) {
             Icon(
-                imageVector = Icons.Filled.BookmarkBorder,
+                imageVector = Icons.Outlined.BookmarkBorder,
                 contentDescription = "Add to favorites",
+                tint = Color.White
             )
         }
     }
@@ -52,8 +56,9 @@ fun SearchIcon(onClick: () -> Unit) {
     ) {
         IconButton(onClick = onClick) {
             Icon(
-                imageVector = Icons.Filled.Search,
+                imageVector = Icons.Outlined.Search,
                 contentDescription = "Add to favorites",
+                tint = Color.White
             )
         }
     }
@@ -75,8 +80,29 @@ fun NavigateBackIcon() {
             onClick = { backStack.removeLastOrNull() }
         ) {
             Icon(
-                imageVector = Icons.Filled.ArrowBackIosNew,
+                imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = "Menu",
+                tint = Color.White
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShareIcon(onClick: () -> Unit) {
+    TooltipBox(
+        positionProvider =
+            TooltipDefaults.rememberTooltipPositionProvider(
+                TooltipAnchorPosition.Above
+            ),
+        tooltip = { PlainTooltip { Text("Add to favorites") } },
+        state = rememberTooltipState(),
+    ) {
+        IconButton(onClick = onClick) {
+            Icon(
+                imageVector = Icons.Outlined.Share,
+                contentDescription = "Add to favorites",
                 tint = Color.White
             )
         }

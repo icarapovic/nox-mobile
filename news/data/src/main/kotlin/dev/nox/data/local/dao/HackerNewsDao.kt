@@ -7,7 +7,7 @@ import androidx.room3.Transaction
 import androidx.room3.Upsert
 import dev.nox.data.local.entity.HackerNewsRankingEntity
 import dev.nox.data.local.entity.HackerNewsStoryEntity
-import dev.nox.data.local.model.HackerNewsRankedStory
+import dev.nox.data.local.model.HackerNewsRankedStoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -22,13 +22,23 @@ interface HackerNewsDao {
         ORDER BY hn_ranking.rank ASC
         """
     )
-    fun observeStories(source: String): Flow<List<HackerNewsRankedStory>>
+    fun observeStories(source: String): Flow<List<HackerNewsRankedStoryEntity>>
 
     /**
      * Cached stories, used as fallback for stories that failed to fetch
      * */
     @Query("SELECT * FROM hn_story WHERE id IN (:ids)")
     suspend fun getStories(ids: List<Long>): List<HackerNewsStoryEntity>
+
+    @Query(
+        """
+        SELECT hn_story.*, hn_ranking.news_source, hn_ranking.rank
+        FROM hn_ranking
+        INNER JOIN hn_story ON hn_story.id = hn_ranking.story_id
+        WHERE hn_ranking.news_source = :source AND hn_story.id = :id
+        """
+    )
+    suspend fun getStory(source: String, id: Long): HackerNewsRankedStoryEntity?
 
     /**
      * Atomically replaces the whole ranked list of [source], so observers

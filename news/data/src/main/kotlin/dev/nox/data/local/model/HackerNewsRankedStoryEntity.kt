@@ -9,7 +9,7 @@ import dev.nox.news.domain.repository.NewsSource
 /**
  * Query result joining a [HackerNewsStoryEntity] with its rank in a news source
  * */
-data class HackerNewsRankedStory(
+data class HackerNewsRankedStoryEntity(
     @Embedded
     val story: HackerNewsStoryEntity,
     @ColumnInfo(name = "news_source")

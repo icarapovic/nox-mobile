@@ -9,4 +9,5 @@ interface NewsItem {
     val id: Long
     val title: String
     val newsSource: NewsSource
+    val url: String?
 }

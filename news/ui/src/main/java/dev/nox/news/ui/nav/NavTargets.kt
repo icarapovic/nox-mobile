@@ -8,6 +8,12 @@ import kotlinx.serialization.Serializable
 object HomeScreenNavKey : NavKey
 
 @Serializable
-data class CategoryMorePageNavKey(
+data class MoreStoriesNavKey(
     val newsSource: NewsSource
+): NavKey
+
+@Serializable
+data class DetailsPageNavKey(
+    val newsSource: NewsSource,
+    val storyId: Long
 ): NavKey

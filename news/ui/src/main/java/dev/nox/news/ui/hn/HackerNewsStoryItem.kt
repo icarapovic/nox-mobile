@@ -1,7 +1,5 @@
 package dev.nox.news.ui.hn
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,20 +13,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.repository.NewsSource
+import dev.nox.news.ui.formatAge
+import dev.nox.news.ui.nav.DetailsPageNavKey
+import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexMono
 import dev.nox.news.ui.theme.PlexSans
-import dev.nox.news.ui.theme.PlexSansCondensed
 import java.time.Duration
 import java.time.Instant
 
 @Composable
-fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
-    val context = LocalContext.current
+fun HackerNewsStoryItem(index: Int, newsSource: NewsSource, story: HackerNewsItem, now: Instant) {
+    val backStack = LocalNavBackStack.current
     val age = Duration.between(Instant.ofEpochSecond(story.timestamp), now).formatAge()
 
     Column(
@@ -36,8 +36,7 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
             .background(Color.Black)
             .fillMaxWidth()
             .clickable(onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(story.url))
-                context.startActivity(intent)
+                backStack.add(DetailsPageNavKey(newsSource, story.id))
             })
     ) {
         Row(
@@ -82,5 +81,3 @@ fun HackerNewsStoryItem(index: Int, story: HackerNewsItem, now: Instant) {
     }
 
 }
-private fun Duration.formatAge(): String =
-    if (toHours() < 1) "${toMinutes().coerceAtLeast(0)}m" else "${toHours()}h"

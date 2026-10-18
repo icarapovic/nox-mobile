@@ -19,12 +19,16 @@ import dev.nox.news.ui.theme.PlexMono
 import dev.nox.news.ui.theme.PlexSans
 
 @Composable
-fun CategoryHeader(
+fun ColoredDotHeader(
     color: Color,
-    title: String
+    title: String,
+    smallHeader: Boolean = false,
 ) {
     Row (
-        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp),
+        modifier = Modifier.padding(
+            top = if(smallHeader) 8.dp else 24.dp,
+            bottom = 8.dp
+        ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier =
@@ -36,10 +40,10 @@ fun CategoryHeader(
         )
         Text(
             text = title,
-            color = Color.White,
-            fontFamily = PlexSans,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            color = if(smallHeader) Color.Gray else Color.White,
+            fontFamily = if(smallHeader) PlexMono else PlexSans,
+            fontSize = if(smallHeader) 16.sp else 20.sp,
+            fontWeight = if(smallHeader) FontWeight.Normal else FontWeight.Bold
         )
     }
 }

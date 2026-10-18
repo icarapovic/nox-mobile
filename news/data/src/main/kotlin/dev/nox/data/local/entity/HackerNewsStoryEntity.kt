@@ -3,6 +3,8 @@ package dev.nox.data.local.entity
 import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.repository.NewsSource
 
 /**
  * Content of a single Hacker News story, stored once regardless of

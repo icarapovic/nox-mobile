@@ -5,6 +5,7 @@ import dev.nox.data.local.entity.HackerNewsRankingEntity
 import dev.nox.data.local.entity.HackerNewsStoryEntity
 import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -94,6 +95,10 @@ class NewsRepositoryImpl(
                 emit(100.0f)
             }
         )
+    }
+
+    override fun getHackerNewsStory(source: NewsSource, id: Long) = flow {
+        emit(hnDao.getStory(source.name, id)?.toDomain())
     }
 
     private fun progress(steps: Int, count: Int): Float {

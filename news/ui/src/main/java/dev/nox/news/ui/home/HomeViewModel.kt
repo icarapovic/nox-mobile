@@ -1,14 +1,18 @@
 package dev.nox.news.ui.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dev.nox.logging.logger.Logger
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -101,6 +105,10 @@ class HomeViewModel(
                 newsRepository.refreshNews(source, NEWS_COUNT).collect()
             }
         }
+    }
+
+    fun fetchHackerNewsStory(source: NewsSource, id: Long): Flow<HackerNewsItem?> {
+        return newsRepository.getHackerNewsStory(source, id)
     }
 
 }

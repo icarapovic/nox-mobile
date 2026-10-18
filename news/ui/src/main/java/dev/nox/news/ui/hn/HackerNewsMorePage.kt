@@ -46,7 +46,7 @@ fun HackerNewsMorePage(
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             newsList.forEachIndexed { index, item ->
-                HackerNewsStoryItem(index, item as HackerNewsItem, now)
+                HackerNewsStoryItem(index, newsSource, item as HackerNewsItem, now)
             }
         }
     }

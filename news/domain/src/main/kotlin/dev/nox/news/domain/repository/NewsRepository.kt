@@ -1,6 +1,7 @@
 package dev.nox.news.domain.repository
 
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -26,4 +27,6 @@ interface NewsRepository {
      * the progress of refreshing the news in background
      * */
     fun refreshNews(source: NewsSource, maxStoriesCount: Int): Flow<Float>
+
+    fun getHackerNewsStory(source: NewsSource, id: Long) : Flow<HackerNewsItem?>
 }

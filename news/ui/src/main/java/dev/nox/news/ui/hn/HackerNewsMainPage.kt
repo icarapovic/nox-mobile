@@ -28,10 +28,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsSource
-import dev.nox.news.ui.components.CategoryHeader
+import dev.nox.news.ui.components.ColoredDotHeader
+import dev.nox.news.ui.components.SeeMoreButton
 import dev.nox.news.ui.components.SourceTab
 import dev.nox.news.ui.home.HomeViewModel
-import dev.nox.news.ui.nav.CategoryMorePageNavKey
+import dev.nox.news.ui.nav.MoreStoriesNavKey
 import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexSans
 import kotlinx.coroutines.flow.StateFlow
@@ -100,46 +101,16 @@ fun HackerNewsCategory(
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { now = Instant.now() }
 
     Column {
-        CategoryHeader(SourceTab.HACKER_NEWS.color, categoryTitle)
+        ColoredDotHeader(SourceTab.HACKER_NEWS.color, categoryTitle)
         newsList.take(5).forEachIndexed { index, item ->
-            HackerNewsStoryItem(index, item as HackerNewsItem, now)
+            HackerNewsStoryItem(index, source, item as HackerNewsItem, now)
         }
         SeeMoreButton(
             title = moreButtonText,
             onSeeMoreClicked = {
-                backStack.add(CategoryMorePageNavKey(source))
+                backStack.add(MoreStoriesNavKey(source))
             }
         )
     }
-}
-
-@Composable
-fun SeeMoreButton(
-    title: String,
-    onSeeMoreClicked: () -> Unit
-) {
-    OutlinedButton(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-        onClick = onSeeMoreClicked,
-        content = {
-            Row(
-                modifier = Modifier.padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = title,
-                    color = Color.White,
-                    fontFamily = PlexSans,
-                    fontSize = 14.sp
-                )
-                Icon(
-                    modifier = Modifier.padding(start = 12.dp).size(16.dp),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                    tint = Color.White,
-                    contentDescription = "Forward icon"
-                )
-            }
-        }
-    )
 }
 

@@ -11,7 +11,9 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.nox.news.ui.hn.HackerNewsMorePage
-import dev.nox.news.ui.nav.CategoryMorePageNavKey
+import dev.nox.news.ui.hn.StoryDetailsPage
+import dev.nox.news.ui.nav.MoreStoriesNavKey
+import dev.nox.news.ui.nav.DetailsPageNavKey
 import dev.nox.news.ui.nav.HomeScreenNavKey
 import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.NoxTheme
@@ -37,7 +39,10 @@ class HomeActivity : ComponentActivity() {
                         ),
                         entryProvider = entryProvider {
                             entry<HomeScreenNavKey> { HomeScreen() }
-                            entry<CategoryMorePageNavKey> { HackerNewsMorePage(it.newsSource) }
+                            entry<MoreStoriesNavKey> { HackerNewsMorePage(it.newsSource) }
+                            entry<DetailsPageNavKey> {
+                                StoryDetailsPage(it.newsSource, it.storyId)
+                            }
                         }
                     )
                 }

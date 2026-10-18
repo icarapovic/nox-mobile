@@ -10,7 +10,7 @@ data class HackerNewsItem (
     val description: String?,
     val author: String,
     val timestamp: Long,
-    val url: String?,
+    override val url: String?,
     val storyType: String,
     val comments: List<Long>,
     val score: Int,
