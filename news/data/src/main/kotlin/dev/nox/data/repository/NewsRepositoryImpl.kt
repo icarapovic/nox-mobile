@@ -3,6 +3,7 @@ package dev.nox.data.repository
 import dev.nox.data.local.dao.HackerNewsDao
 import dev.nox.data.local.entity.HackerNewsRankingEntity
 import dev.nox.data.local.entity.HackerNewsStoryEntity
+import dev.nox.data.remote.client.AlgoliaClient
 import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.models.hackernews.HackerNewsComment
@@ -20,7 +21,8 @@ private const val PARALLEL_STORY_REQUESTS = 3
 
 class NewsRepositoryImpl(
     private val hnDao: HackerNewsDao,
-    private val hnApi: HackerNewsClient
+    private val hnApi: HackerNewsClient,
+    private val algoliaApi: AlgoliaClient
 ) : NewsRepository {
 
     override fun observeNews(source: NewsSource): Flow<List<NewsItem>> {
