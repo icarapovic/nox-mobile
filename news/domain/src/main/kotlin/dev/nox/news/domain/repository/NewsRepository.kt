@@ -1,6 +1,7 @@
 package dev.nox.news.domain.repository
 
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsComment
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +30,6 @@ interface NewsRepository {
     fun refreshNews(source: NewsSource, maxStoriesCount: Int): Flow<Float>
 
     fun getHackerNewsStory(source: NewsSource, id: Long) : Flow<HackerNewsItem?>
+
+    fun getHackerNewsComments(ids: List<Long>): Flow<List<HackerNewsComment>>
 }

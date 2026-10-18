@@ -102,7 +102,7 @@ class HackerNewsClient (
         }
     }
 
-    suspend fun fetchComment(commentId: Long): Result<HackerNewsCommentDto?> {
+    suspend fun fetchComment(commentId: Long): Result<HackerNewsCommentDto> {
         try {
             val story = retrofitClient.fetchComment(commentId)
             return Result.success(story)

@@ -5,7 +5,7 @@ import dev.nox.data.local.entity.HackerNewsRankingEntity
 import dev.nox.data.local.entity.HackerNewsStoryEntity
 import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.news.domain.models.NewsItem
-import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsComment
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -101,9 +101,29 @@ class NewsRepositoryImpl(
         emit(hnDao.getStory(source.name, id)?.toDomain())
     }
 
+    override fun getHackerNewsComments(ids: List<Long>) = flow {
+        val commentList = mutableListOf<HackerNewsComment>()
+        recursivelyFetchComments(ids, commentList)
+        emit(commentList)
+    }
+
     private fun progress(steps: Int, count: Int): Float {
         return ((count.toFloat() / steps) * 100.0f)
             .coerceIn(0.0f..100.0f)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun recursivelyFetchComments(ids: List<Long>, commentList: MutableList<HackerNewsComment>) {
+        ids.asFlow().flatMapMerge(PARALLEL_STORY_REQUESTS) { id ->
+            flow { emit(hnApi.fetchComment(id).getOrNull()) }
+        }.collect { c ->
+            c?.let { comment ->
+                commentList.add(comment.toDomain())
+                if(comment.kids.isNotEmpty()) {
+                    recursivelyFetchComments(comment.kids, commentList)
+                }
+            }
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dev.nox.logging.logger.Logger
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsComment
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
@@ -109,6 +110,10 @@ class HomeViewModel(
 
     fun fetchHackerNewsStory(source: NewsSource, id: Long): Flow<HackerNewsItem?> {
         return newsRepository.getHackerNewsStory(source, id)
+    }
+
+    fun getHackerNewsComments(ids: List<Long>): Flow<List<HackerNewsComment>> {
+        return newsRepository.getHackerNewsComments(ids)
     }
 
 }

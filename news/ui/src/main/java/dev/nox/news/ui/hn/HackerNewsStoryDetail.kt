@@ -17,6 +17,7 @@ import dev.nox.news.domain.models.NewsItem
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
+import dev.nox.news.ui.components.DetailPageComments
 import dev.nox.news.ui.components.DetailPageToolbar
 import dev.nox.news.ui.home.HomeViewModel
 import dev.nox.news.ui.pages.HnDetailsPageStory
@@ -53,7 +54,6 @@ fun HackerNewsStoryDetail(
             DetailPageToolbar(story)
             HnDetailsPageStory(story)
         }
-
-        //DetailPageComments()
+        DetailPageComments(source, storyId)
     }
 }
