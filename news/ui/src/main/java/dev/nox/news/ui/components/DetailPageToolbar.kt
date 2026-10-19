@@ -10,12 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.hackernews.HackerNewsItem
 
 @Composable
 fun DetailPageToolbar(
-    story: NewsItem,
+    story: HackerNewsItem,
     onBookmarkClicked: (NewsItem) -> Unit = {},
-    onShareClicked: (NewsItem) -> Unit = {}
 ) {
     Column {
         Row (
@@ -25,7 +25,9 @@ fun DetailPageToolbar(
             NavigateBackIcon()
             Spacer(modifier = Modifier.weight(1f))
             BookmarkIcon { onBookmarkClicked(story) }
-            ShareIcon { onShareClicked(story) }
+            story.url?.let { url ->
+                ShareIcon(url)
+            }
         }
     }
 }

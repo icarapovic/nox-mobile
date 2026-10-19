@@ -1,5 +1,6 @@
 package dev.nox.news.ui.components
 
+import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -20,6 +21,7 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import dev.nox.news.ui.nav.LocalNavBackStack
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,7 +92,8 @@ fun NavigateBackIcon() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShareIcon(onClick: () -> Unit) {
+fun ShareIcon(url: String) {
+    val context = LocalContext.current
     TooltipBox(
         positionProvider =
             TooltipDefaults.rememberTooltipPositionProvider(
@@ -99,7 +102,13 @@ fun ShareIcon(onClick: () -> Unit) {
         tooltip = { PlainTooltip { Text("Add to favorites") } },
         state = rememberTooltipState(),
     ) {
-        IconButton(onClick = onClick) {
+        IconButton(onClick = {
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, url)
+            }
+            context.startActivity(Intent.createChooser(sendIntent, null))
+        }) {
             Icon(
                 imageVector = Icons.Outlined.Share,
                 contentDescription = "Add to favorites",
