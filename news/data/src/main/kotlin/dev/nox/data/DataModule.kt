@@ -2,6 +2,7 @@ package dev.nox.data
 
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
+import dev.nox.data.local.dao.GitHubDao
 import dev.nox.data.local.dao.HackerNewsDao
 import dev.nox.data.local.db.NewsDatabase
 import dev.nox.data.remote.client.AlgoliaClient
@@ -20,6 +21,7 @@ val dataModule = module {
         ).setDriver(AndroidSQLiteDriver()).build()
     }
     single<HackerNewsDao> { get<NewsDatabase>().hackerNewsDao() }
+    single<GitHubDao> { get<NewsDatabase>().gitHubDao() }
 
     single<HackerNewsClient> { HackerNewsClient(get(), get()) }
     single<AlgoliaClient> { AlgoliaClient(get(), get()) }
