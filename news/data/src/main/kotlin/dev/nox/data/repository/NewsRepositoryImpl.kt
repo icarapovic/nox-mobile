@@ -1,11 +1,15 @@
 package dev.nox.data.repository
 
+import dev.nox.data.local.dao.GitHubDao
 import dev.nox.data.local.dao.HackerNewsDao
 import dev.nox.data.local.entity.HackerNewsRankingEntity
 import dev.nox.data.local.entity.HackerNewsStoryEntity
 import dev.nox.data.remote.client.AlgoliaClient
+import dev.nox.data.remote.client.GitHubClient
 import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.github.GitHubRepository
+import dev.nox.news.domain.models.github.GitHubRepositorySort
 import dev.nox.news.domain.models.hackernews.HackerNewsComment
 import dev.nox.news.domain.repository.NewsRepository
 import dev.nox.news.domain.repository.NewsSource
@@ -28,6 +32,8 @@ class NewsRepositoryImpl(
     private val hnDao: HackerNewsDao,
     private val hnApi: HackerNewsClient,
     private val algoliaApi: AlgoliaClient,
+    private val gitHubDao: GitHubDao,
+    private val gitHubApi: GitHubClient,
     private val clock: Clock = Clock.System
 ) : NewsRepository {
 
@@ -129,6 +135,32 @@ class NewsRepositoryImpl(
         algoliaApi.fetchItem(storyId).onSuccess { item ->
             hnDao.replaceComments(storyId, item.toCommentEntities(), now)
         }
+    }
+
+    override suspend fun searchGitHubRepositories(
+        query: String,
+        language: String?,
+        sort: GitHubRepositorySort?,
+        descending: Boolean,
+        page: Int,
+        perPage: Int
+    ): Result<List<GitHubRepository>> = gitHubApi.searchRepositories(
+        query = query,
+        language = language,
+        sort = sort?.toClientSort(),
+        descending = descending,
+        perPage = perPage,
+        page = page
+    ).map { response ->
+        val entities = response.items.map { it.toEntity() }
+        gitHubDao.upsertRepositories(entities)
+        entities.map { it.toDomain() }
+    }
+
+    private fun GitHubRepositorySort.toClientSort() = when (this) {
+        GitHubRepositorySort.STARS -> GitHubClient.Sort.STARS
+        GitHubRepositorySort.FORKS -> GitHubClient.Sort.FORKS
+        GitHubRepositorySort.UPDATED -> GitHubClient.Sort.UPDATED
     }
 
     private fun progress(steps: Int, count: Int): Float {

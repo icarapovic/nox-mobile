@@ -27,6 +27,6 @@ val dataModule = module {
     single<AlgoliaClient> { AlgoliaClient(get(), get()) }
     single<GitHubClient> { GitHubClient(get(), get()) }
 
-    single<NewsRepository> { NewsRepositoryImpl(get(), get(), get()) }
+    single<NewsRepository> { NewsRepositoryImpl(get(), get(), get(), get(), get()) }
 
 }

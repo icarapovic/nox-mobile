@@ -1,6 +1,8 @@
 package dev.nox.news.domain.repository
 
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.github.GitHubRepository
+import dev.nox.news.domain.models.github.GitHubRepositorySort
 import dev.nox.news.domain.models.hackernews.HackerNewsComment
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import kotlinx.coroutines.flow.Flow
@@ -38,4 +40,25 @@ interface NewsRepository {
      * @return the comments, or an empty list if fetching failed
      * */
     fun getHackerNewsComments(storyId: Long): Flow<List<HackerNewsComment>>
+
+    /**
+     * Searches GitHub repositories
+     *
+     * @param query free text to search for
+     * @param language only return repositories written in this programming language
+     * @param sort the sort criteria, or `null` for best match
+     * @param descending sort direction, ignored if [sort] is `null`
+     * @param page 1-based page number
+     * @return the matching repositories, or a failure holding a
+     * [dev.nox.news.domain.exceptions.DataFetchingException] or
+     * [dev.nox.news.domain.exceptions.NoInternetException]
+     * */
+    suspend fun searchGitHubRepositories(
+        query: String,
+        language: String? = null,
+        sort: GitHubRepositorySort? = null,
+        descending: Boolean = true,
+        page: Int = 1,
+        perPage: Int = 30
+    ): Result<List<GitHubRepository>>
 }
