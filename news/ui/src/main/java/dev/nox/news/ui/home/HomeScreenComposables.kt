@@ -113,9 +113,9 @@ fun HomeActivityViewPager(
             when (sourceTabs[page]) {
                 SourceTab.HACKER_NEWS -> HackerNewsPage(viewModel)
                 SourceTab.GITHUB -> GitHubTrendingPage()
-                SourceTab.GITLAB,
-                SourceTab.CODEBERG,
-                SourceTab.ARS_TECHNICA -> PlaceholderPage()
+//                SourceTab.GITLAB,
+//                SourceTab.CODEBERG,
+//                SourceTab.ARS_TECHNICA -> PlaceholderPage()
             }
         }
     }

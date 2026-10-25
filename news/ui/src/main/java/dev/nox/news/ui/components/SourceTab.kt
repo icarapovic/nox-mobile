@@ -8,7 +8,7 @@ enum class SourceTab (
 ) {
     HACKER_NEWS("Hacker News", Color(0xFFEA7E15)),
     GITHUB("GitHub", Color(0xFF79449B)),
-    GITLAB("GitLab", Color(0xFFCA0000)),
-    CODEBERG("Codeberg", Color(0xFF16AFF1)),
-    ARS_TECHNICA("ArsTechnica", Color(0xFFFF5722))
+//    GITLAB("GitLab", Color(0xFFCA0000)),
+//    CODEBERG("Codeberg", Color(0xFF16AFF1)),
+//    ARS_TECHNICA("ArsTechnica", Color(0xFFFF5722))
 }
