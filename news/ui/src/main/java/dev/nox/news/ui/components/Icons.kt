@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -99,7 +100,7 @@ fun ShareIcon(url: String) {
             TooltipDefaults.rememberTooltipPositionProvider(
                 TooltipAnchorPosition.Above
             ),
-        tooltip = { PlainTooltip { Text("Add to favorites") } },
+        tooltip = { PlainTooltip { Text("Share") } },
         state = rememberTooltipState(),
     ) {
         IconButton(onClick = {
@@ -111,9 +112,18 @@ fun ShareIcon(url: String) {
         }) {
             Icon(
                 imageVector = Icons.Outlined.Share,
-                contentDescription = "Add to favorites",
+                contentDescription = "Share",
                 tint = Color.White
             )
         }
     }
+}
+
+@Composable
+fun StarIcon() {
+   Icon(
+       imageVector = Icons.Outlined.Star,
+       contentDescription = "Star count",
+       tint = Color.White
+   )
 }

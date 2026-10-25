@@ -22,11 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
 import dev.nox.news.ui.components.BookmarkIcon
 import dev.nox.news.ui.components.SearchIcon
 import dev.nox.news.ui.components.SourceTab
+import dev.nox.news.ui.github.GitHubTrendingPage
 import dev.nox.news.ui.hn.HackerNewsPage
 import dev.nox.news.ui.theme.PlexMono
 import kotlinx.coroutines.launch
@@ -113,7 +112,7 @@ fun HomeActivityViewPager(
         ) { page ->
             when (sourceTabs[page]) {
                 SourceTab.HACKER_NEWS -> HackerNewsPage(viewModel)
-                SourceTab.GITHUB,
+                SourceTab.GITHUB -> GitHubTrendingPage()
                 SourceTab.GITLAB,
                 SourceTab.CODEBERG,
                 SourceTab.ARS_TECHNICA -> PlaceholderPage()

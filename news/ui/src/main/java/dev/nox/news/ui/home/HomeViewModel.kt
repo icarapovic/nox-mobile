@@ -5,6 +5,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import dev.nox.logging.logger.Logger
 import dev.nox.news.domain.models.NewsItem
+import dev.nox.news.domain.models.github.GitHubRepository
+import dev.nox.news.domain.models.github.GitHubRepositorySort
 import dev.nox.news.domain.models.hackernews.HackerNewsComment
 import dev.nox.news.domain.models.hackernews.HackerNewsItem
 import dev.nox.news.domain.repository.NewsRepository
@@ -18,12 +20,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 private const val NEWS_COUNT = 50
 private val RESUME_REFRESH_INTERVAL = 10.minutes
+private val GITHUB_REFRESH_INTERVAL = 10.minutes
+private val GITHUB_QUERY = "stars:>100 created:>${LocalDate.now().minusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))}"
+private const val GITHUB_PER_PAGE = 30
 
 class HomeViewModel(
     private val newsRepository: NewsRepository,
@@ -33,6 +40,7 @@ class HomeViewModel(
 ) : ViewModel(), KoinComponent {
 
     private var lastRefresh: TimeMark? = null
+    private var lastGitHubRefresh: TimeMark? = null
 
     private val _hnTopStories: MutableStateFlow<List<NewsItem>> = MutableStateFlow(emptyList())
     val hnTopStories = _hnTopStories.asStateFlow()
@@ -53,6 +61,9 @@ class HomeViewModel(
 
     private val _categoryStoryCount = MutableStateFlow(5)
     val categoryStoryCount = _categoryStoryCount.asStateFlow()
+
+    private val _githubRepos = MutableStateFlow<List<GitHubRepository>>(emptyList())
+    val githubRepos = _githubRepos.asStateFlow()
 
     init {
         viewModelScope.launch(dispatcher) {
@@ -90,6 +101,7 @@ class HomeViewModel(
             }
         }
 
+        refreshGitHubRepositories()
     }
 
     /**
@@ -102,11 +114,34 @@ class HomeViewModel(
         refreshNews()
     }
 
+
+
     fun refreshNews() {
         lastRefresh = timeSource.markNow()
         NewsSource.entries.forEach { source ->
             viewModelScope.launch(dispatcher) {
                 newsRepository.refreshNews(source, NEWS_COUNT).collect()
+            }
+        }
+    }
+
+    /**
+     * Loads GitHub repositories (cache first) unless the last refresh
+     * started less than [GITHUB_REFRESH_INTERVAL] ago
+     * */
+    fun refreshGitHubRepositories() {
+        val elapsed = lastGitHubRefresh?.elapsedNow()
+        if (elapsed != null && elapsed < GITHUB_REFRESH_INTERVAL) return
+        lastGitHubRefresh = timeSource.markNow()
+
+        viewModelScope.launch(dispatcher) {
+            newsRepository.searchGitHubRepositories(
+                query = GITHUB_QUERY,
+                sort = GitHubRepositorySort.STARS,
+                perPage = GITHUB_PER_PAGE
+            ).collect { result ->
+                // on failure keep showing what is already there
+                result.onSuccess { _githubRepos.value = it }
             }
         }
     }

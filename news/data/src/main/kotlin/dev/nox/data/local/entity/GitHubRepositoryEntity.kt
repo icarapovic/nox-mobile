@@ -20,6 +20,8 @@ data class GitHubRepositoryEntity(
     val url: String,
     @ColumnInfo(name = "language")
     val language: String?,
+    @ColumnInfo(name = "stars")
+    val stars: Int,
     @ColumnInfo(name = "owner_id")
     val ownerId: Long,
     @ColumnInfo(name = "owner_login")
@@ -34,6 +36,7 @@ data class GitHubRepositoryEntity(
         description = description,
         url = url,
         language = language,
+        stars = stars,
         ownerId = ownerId,
         ownerLogin = ownerLogin,
         ownerAvatarUrl = ownerAvatarUrl

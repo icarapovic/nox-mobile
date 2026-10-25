@@ -7,6 +7,7 @@ data class GitHubRepository(
     val description: String?,
     val url: String,
     val language: String?,
+    val stars: Int,
     val ownerId: Long,
     val ownerLogin: String,
     val ownerAvatarUrl: String?

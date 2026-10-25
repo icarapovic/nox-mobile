@@ -49,16 +49,17 @@ interface NewsRepository {
      * @param sort the sort criteria, or `null` for best match
      * @param descending sort direction, ignored if [sort] is `null`
      * @param page 1-based page number
-     * @return the matching repositories, or a failure holding a
+     * @return a flow emitting the cached repositories first (if any), then the
+     * matching repositories from the network, or a failure holding a
      * [dev.nox.news.domain.exceptions.DataFetchingException] or
      * [dev.nox.news.domain.exceptions.NoInternetException]
      * */
-    suspend fun searchGitHubRepositories(
+    fun searchGitHubRepositories(
         query: String,
         language: String? = null,
         sort: GitHubRepositorySort? = null,
         descending: Boolean = true,
         page: Int = 1,
         perPage: Int = 30
-    ): Result<List<GitHubRepository>>
+    ): Flow<Result<List<GitHubRepository>>>
 }

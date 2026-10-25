@@ -137,24 +137,34 @@ class NewsRepositoryImpl(
         }
     }
 
-    override suspend fun searchGitHubRepositories(
+    override fun searchGitHubRepositories(
         query: String,
         language: String?,
         sort: GitHubRepositorySort?,
         descending: Boolean,
         page: Int,
         perPage: Int
-    ): Result<List<GitHubRepository>> = gitHubApi.searchRepositories(
-        query = query,
-        language = language,
-        sort = sort?.toClientSort(),
-        descending = descending,
-        perPage = perPage,
-        page = page
-    ).map { response ->
-        val entities = response.items.map { it.toEntity() }
-        gitHubDao.upsertRepositories(entities)
-        entities.map { it.toDomain() }
+    ): Flow<Result<List<GitHubRepository>>> = flow {
+        // cached repositories first, so the UI has content while the request is running
+        val cached = gitHubDao.getRepositories()
+        if (cached.isNotEmpty()) {
+            emit(Result.success(cached.map { it.toDomain() }))
+        }
+
+        emit(
+            gitHubApi.searchRepositories(
+                query = query,
+                language = language,
+                sort = sort?.toClientSort(),
+                descending = descending,
+                perPage = perPage,
+                page = page
+            ).map { response ->
+                val entities = response.items.map { it.toEntity() }
+                gitHubDao.upsertRepositories(entities)
+                entities.map { it.toDomain() }
+            }
+        )
     }
 
     private fun GitHubRepositorySort.toClientSort() = when (this) {
