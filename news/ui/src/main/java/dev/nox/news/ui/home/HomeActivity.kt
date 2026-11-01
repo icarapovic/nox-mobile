@@ -10,18 +10,13 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import dev.nox.news.ui.hn.HackerNewsMorePage
-import dev.nox.news.ui.hn.StoryDetailsPage
-import dev.nox.news.ui.nav.MoreStoriesNavKey
-import dev.nox.news.ui.nav.DetailsPageNavKey
+import dev.nox.news.ui.hn.HnStoryPage
+import dev.nox.news.ui.nav.HnStoryPageNavKey
 import dev.nox.news.ui.nav.HomeScreenNavKey
 import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.NoxTheme
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : ComponentActivity() {
-
-    val viewModel: HomeViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,19 +34,11 @@ class HomeActivity : ComponentActivity() {
                         ),
                         entryProvider = entryProvider {
                             entry<HomeScreenNavKey> { HomeScreen() }
-                            entry<MoreStoriesNavKey> { HackerNewsMorePage(it.newsSource) }
-                            entry<DetailsPageNavKey> {
-                                StoryDetailsPage(it.newsSource, it.storyId)
-                            }
+                            entry<HnStoryPageNavKey> { HnStoryPage(it.storyId) }
                         }
                     )
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshNewsOnResume()
     }
 }

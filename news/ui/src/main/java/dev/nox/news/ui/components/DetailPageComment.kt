@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.nox.news.domain.models.hackernews.HackerNewsComment
+import dev.nox.news.domain.models.hackernews.HnComment
 import dev.nox.news.ui.formatAge
 import dev.nox.news.ui.theme.PlexMono
 import dev.nox.news.ui.theme.PlexSans
@@ -35,7 +34,7 @@ import java.time.Instant
  * */
 fun LazyListScope.detailPageComments(
     storyOp: String?,
-    comments: List<HackerNewsComment>
+    comments: List<HnComment>
 ) {
     item(key = "comments_header") {
         Column {
@@ -75,7 +74,7 @@ fun LazyListScope.detailPageComments(
 @Composable
 fun HackerNewsComment(
     storyOp: String?,
-    hnComment: HackerNewsComment
+    hnComment: HnComment
 ) {
     val age = Duration.between(Instant.ofEpochSecond(hnComment.time), Instant.now()).formatAge()
 

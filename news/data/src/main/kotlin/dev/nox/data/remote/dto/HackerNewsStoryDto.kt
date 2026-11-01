@@ -1,32 +1,34 @@
 package dev.nox.data.remote.dto
 
-import dev.nox.data.local.entity.HackerNewsStoryEntity
+import dev.nox.data.local.entity.HnStoryEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class HackerNewsStoryDto(
-    val id: Long,
-    val title: String,
-    val text: String? = null,
     val by: String,
-    val time: Long,
-    val url: String? = null,
-    val dead: Boolean? = false,
-    val type: String,
+    val descendants: Int? = null,
+    val id: Long,
     val kids: List<Long> = listOf(),
     val score: Int? = null,
-    val descendants: Int? = null
+    val time: Long,
+    val title: String,
+    val type: String,
+    val url: String? = null,
+    val text: String? = null,
+    val dead: Boolean? = false
 ) {
-    fun toStoryEntity() = HackerNewsStoryEntity(
+    fun toStoryEntity(source: String, rank: Int) = HnStoryEntity(
         id = id,
         title = title,
-        text = text,
+        content = text,
         author = by,
         timestamp = time,
         url = url,
         storyType = type,
         comments = kids.joinToString(";"),
-        score = score,
-        descendants = descendants
+        score = score ?: 0,
+        rank = rank,
+        commentCount = descendants ?: 0,
+        source = source
     )
 }

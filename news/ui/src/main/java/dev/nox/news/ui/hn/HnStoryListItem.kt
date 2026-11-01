@@ -15,10 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.nox.news.domain.models.hackernews.HackerNewsItem
-import dev.nox.news.domain.repository.NewsSource
+import dev.nox.news.domain.models.hackernews.HnStory
 import dev.nox.news.ui.formatAge
-import dev.nox.news.ui.nav.DetailsPageNavKey
+import dev.nox.news.ui.nav.HnStoryPageNavKey
 import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexMono
 import dev.nox.news.ui.theme.PlexSans
@@ -26,7 +25,7 @@ import java.time.Duration
 import java.time.Instant
 
 @Composable
-fun HackerNewsStoryItem(index: Int, newsSource: NewsSource, story: HackerNewsItem, now: Instant) {
+fun HnStoryListItem(index: Int, story: HnStory, now: Instant) {
     val backStack = LocalNavBackStack.current
     val age = Duration.between(Instant.ofEpochSecond(story.timestamp), now).formatAge()
 
@@ -35,13 +34,13 @@ fun HackerNewsStoryItem(index: Int, newsSource: NewsSource, story: HackerNewsIte
             .background(Color.Black)
             .fillMaxWidth()
             .clickable(onClick = {
-                backStack.add(DetailsPageNavKey(newsSource, story.id))
+                backStack.add(HnStoryPageNavKey(story.id))
             })
     ) {
         Row(
             modifier = Modifier
                 .padding(
-                    start = 32.dp, top = 8.dp)
+                    start = 16.dp, end = 16.dp, top = 8.dp)
         ) {
             Text(
                 text = "${index + 1}",

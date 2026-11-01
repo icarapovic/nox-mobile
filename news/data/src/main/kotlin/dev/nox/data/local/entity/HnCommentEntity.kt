@@ -2,28 +2,21 @@ package dev.nox.data.local.entity
 
 import androidx.room3.ColumnInfo
 import androidx.room3.Entity
-import androidx.room3.ForeignKey
 import androidx.room3.Index
 import androidx.room3.PrimaryKey
-import dev.nox.news.domain.models.hackernews.HackerNewsComment
+import dev.nox.news.domain.models.hackernews.HnComment
 
 /**
- * Cached comment of a [HackerNewsStoryEntity]. Deleted together with its
- * story, so the cache is bounded by the ranked stories
+ * Cached comment of a [HnStoryEntity]. Has no foreign key because a story has
+ * one row per source and those rows are replaced on refresh. Deleted by
+ * [dev.nox.data.local.dao.HackerNewsDao.updateStoryCache] once its story has no
+ * rows left, so the cache is bounded by the ranked stories
  * */
 @Entity(
     tableName = "hn_comment",
-    foreignKeys = [
-        ForeignKey(
-            entity = HackerNewsStoryEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["story_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
     indices = [Index("story_id")]
 )
-data class HackerNewsCommentEntity(
+data class HnCommentEntity(
     @ColumnInfo(name = "id")
     @PrimaryKey
     val id: Long,
@@ -43,7 +36,7 @@ data class HackerNewsCommentEntity(
     @ColumnInfo(name = "timestamp")
     val timestamp: Long
 ) {
-    fun toDomain() = HackerNewsComment(
+    fun toDomain() = HnComment(
         id = id,
         text = text,
         by = author,

@@ -1,11 +1,11 @@
 package dev.nox.data.remote.dto
 
-import dev.nox.data.local.entity.HackerNewsCommentEntity
+import dev.nox.data.local.entity.HnCommentEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AlgoliaItemDto(
+data class HnCommentDto(
     val id: Long,
     @SerialName("created_at_i") val time: Long,
     val type: String,
@@ -16,23 +16,23 @@ data class AlgoliaItemDto(
     val points: Int? = null,
     @SerialName("parent_id") val parentId: Long? = null,
     @SerialName("story_id") val storyId: Long? = null,
-    val children: List<AlgoliaItemDto> = listOf()
+    val children: List<HnCommentDto> = listOf()
 ) {
 
     /**
      * Flattens the [children] tree in pre-order, so every comment
      * is directly followed by its replies. Siblings are sorted newest first
      * */
-    fun toCommentEntities(): List<HackerNewsCommentEntity> = buildList { addComments(children, depth = 0) }
+    fun toCommentEntities(): List<HnCommentEntity> = buildList { addComments(children, depth = 0) }
 
-    private fun MutableList<HackerNewsCommentEntity>.addComments(items: List<AlgoliaItemDto>, depth: Int) {
+    private fun MutableList<HnCommentEntity>.addComments(items: List<HnCommentDto>, depth: Int) {
         items.sortedByDescending { it.time }.forEach { item ->
-            add(item.toCommentEntity(storyId = this@AlgoliaItemDto.id, position = size, depth = depth))
+            add(item.toCommentEntity(storyId = this@HnCommentDto.id, position = size, depth = depth))
             addComments(item.children, depth + 1)
         }
     }
 
-    private fun toCommentEntity(storyId: Long, position: Int, depth: Int) = HackerNewsCommentEntity(
+    private fun toCommentEntity(storyId: Long, position: Int, depth: Int) = HnCommentEntity(
         id = id,
         storyId = storyId,
         position = position,

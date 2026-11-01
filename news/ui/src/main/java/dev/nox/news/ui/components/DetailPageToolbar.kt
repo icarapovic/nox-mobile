@@ -9,13 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.nox.news.domain.models.NewsItem
-import dev.nox.news.domain.models.hackernews.HackerNewsItem
+import dev.nox.news.domain.models.hackernews.HnStory
 
 @Composable
 fun DetailPageToolbar(
-    story: HackerNewsItem,
-    onBookmarkClicked: (NewsItem) -> Unit = {},
+    story: HnStory,
+    onBookmarkClicked: (HnStory) -> Unit = {},
 ) {
     Column {
         Row (

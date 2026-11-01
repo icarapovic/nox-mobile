@@ -1,6 +1,5 @@
 package dev.nox.news.ui.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,14 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.nox.news.domain.models.Source
 import dev.nox.news.ui.components.BookmarkIcon
+import dev.nox.news.ui.components.ColoredDotHeader
 import dev.nox.news.ui.components.SearchIcon
-import dev.nox.news.ui.components.SourceTab
-import dev.nox.news.ui.github.GitHubTrendingPage
-import dev.nox.news.ui.hn.HackerNewsPage
+import dev.nox.news.ui.components.Page
 import dev.nox.news.ui.theme.PlexMono
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -73,9 +71,8 @@ fun HomeScreen(
 @Composable
 fun HomeActivityViewPager(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel()
 ) {
-    val sourceTabs = SourceTab.entries
+    val sourceTabs = Source.entries
     val pagerState = rememberPagerState { sourceTabs.size }
     val coroutineScope = rememberCoroutineScope()
 
@@ -87,7 +84,7 @@ fun HomeActivityViewPager(
                 TabRowDefaults.PrimaryIndicator(
                     Modifier.tabIndicatorOffset(pagerState.currentPage, matchContentSize = true),
                     width = Dp.Unspecified,
-                    color = sourceTabs[pagerState.currentPage].color
+                    color = Color(sourceTabs[pagerState.currentPage].tabColor)
                 )
             }
         ) {
@@ -109,19 +106,6 @@ fun HomeActivityViewPager(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
-        ) { page ->
-            when (sourceTabs[page]) {
-                SourceTab.HACKER_NEWS -> HackerNewsPage(viewModel)
-                SourceTab.GITHUB -> GitHubTrendingPage()
-//                SourceTab.GITLAB,
-//                SourceTab.CODEBERG,
-//                SourceTab.ARS_TECHNICA -> PlaceholderPage()
-            }
-        }
+        ) { page -> Page(sourceTabs[page]) }
     }
-}
-
-@Composable
-private fun PlaceholderPage() {
-    Box(modifier = Modifier.fillMaxSize())
 }

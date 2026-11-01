@@ -1,6 +1,6 @@
 package dev.nox.data.remote.client
 
-import dev.nox.data.remote.dto.AlgoliaItemDto
+import dev.nox.data.remote.dto.HnCommentDto
 import dev.nox.news.domain.exceptions.DataFetchingException
 import dev.nox.news.domain.exceptions.NoInternetException
 import okhttp3.OkHttpClient
@@ -10,7 +10,7 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.create
 
-class AlgoliaClient (
+class HnCommentsClient (
     okHttpHttp: OkHttpClient,
     converterFactory: Converter.Factory,
 ) {
@@ -22,9 +22,9 @@ class AlgoliaClient (
         .client(okHttpHttp)
         .addConverterFactory(converterFactory)
         .build()
-        .create<AlgoliaApi>()
+        .create<HnCommentsApi>()
 
-    suspend fun fetchItem(itemId: Long): Result<AlgoliaItemDto> {
+    suspend fun fetchItem(itemId: Long): Result<HnCommentDto> {
         try {
             val item = retrofitClient.fetchItem(itemId)
             return Result.success(item)

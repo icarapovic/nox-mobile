@@ -23,6 +23,7 @@ android {
 dependencies {
     implementation(project(":news:domain"))
     implementation(project(":common:net"))
+    implementation(project(":common:logging"))
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)

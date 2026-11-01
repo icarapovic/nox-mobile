@@ -1,6 +1,6 @@
 package dev.nox.news.domain.models.hackernews
 
-data class HackerNewsComment (
+data class HnComment (
     val id: Long,
     val text: String? = null,
     val by: String? = null,

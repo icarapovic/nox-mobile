@@ -2,107 +2,69 @@ package dev.nox.data.local.dao
 
 import androidx.room3.Dao
 import androidx.room3.Insert
+import androidx.room3.OnConflictStrategy
 import androidx.room3.Query
 import androidx.room3.Transaction
-import androidx.room3.Upsert
-import dev.nox.data.local.entity.HackerNewsCommentEntity
-import dev.nox.data.local.entity.HackerNewsCommentFetchEntity
-import dev.nox.data.local.entity.HackerNewsRankingEntity
-import dev.nox.data.local.entity.HackerNewsStoryEntity
-import dev.nox.data.local.model.HackerNewsRankedStoryEntity
+import dev.nox.data.local.entity.HnCommentEntity
+import dev.nox.data.local.entity.HnStoryEntity
+import dev.nox.news.domain.models.Source
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HackerNewsDao {
 
-    @Query(
-        """
-        SELECT hn_story.*, hn_ranking.news_source, hn_ranking.rank
-        FROM hn_ranking
-        INNER JOIN hn_story ON hn_story.id = hn_ranking.story_id
-        WHERE hn_ranking.news_source = :source
-        ORDER BY hn_ranking.rank ASC
-        """
-    )
-    fun observeStories(source: String): Flow<List<HackerNewsRankedStoryEntity>>
+    @Query("SELECT * FROM hn_stories WHERE source = 'HN_TOP' ORDER BY rank")
+    fun observeTopStories(): Flow<List<HnStoryEntity>>
 
-    /**
-     * Cached stories, used as fallback for stories that failed to fetch
-     * */
-    @Query("SELECT * FROM hn_story WHERE id IN (:ids)")
-    suspend fun getStories(ids: List<Long>): List<HackerNewsStoryEntity>
+    @Query("SELECT * FROM hn_stories WHERE source = 'HN_NEW' ORDER BY rank")
+    fun observeNewStories(): Flow<List<HnStoryEntity>>
 
-    @Query(
-        """
-        SELECT hn_story.*, hn_ranking.news_source, hn_ranking.rank
-        FROM hn_ranking
-        INNER JOIN hn_story ON hn_story.id = hn_ranking.story_id
-        WHERE hn_ranking.news_source = :source AND hn_story.id = :id
-        """
-    )
-    suspend fun getStory(source: String, id: Long): HackerNewsRankedStoryEntity?
+    @Query("SELECT * FROM hn_stories WHERE source = 'HN_BEST' ORDER BY rank")
+    fun observeBestStories(): Flow<List<HnStoryEntity>>
 
-    /**
-     * Atomically replaces the whole ranked list of [source], so observers
-     * receive a single emission per refresh
-     * */
+    @Query("SELECT * FROM hn_stories WHERE source = 'HN_ASK' ORDER BY rank")
+    fun observeAskStories(): Flow<List<HnStoryEntity>>
+
+    @Query("SELECT * FROM hn_stories WHERE source = 'HN_SHOW' ORDER BY rank")
+    fun observeShowStories(): Flow<List<HnStoryEntity>>
+
+    @Query("SELECT * FROM hn_stories WHERE source = 'HN_JOBS' ORDER BY rank")
+    fun observeJobsStories(): Flow<List<HnStoryEntity>>
+
+    @Query("SELECT * FROM hn_stories WHERE id IN (:ids) AND source = :source")
+    suspend fun getStories(source: Source, ids: List<Long>): List<HnStoryEntity>
+
     @Transaction
-    suspend fun replaceStories(
-        source: String,
-        stories: List<HackerNewsStoryEntity>,
-        rankings: List<HackerNewsRankingEntity>
-    ) {
-        upsertStories(stories)
-        deleteRankings(source)
-        insertRankings(rankings)
-        deleteUnrankedStories()
+    suspend fun updateStoryCache(source: Source, newStories: List<HnStoryEntity>) {
+        deleteAllStories(source)
+        insertAll(newStories)
+        deleteOrphanedComments()
     }
 
-    // Upsert updates in place; REPLACE would delete the row and cascade to its rankings
-    @Upsert
-    suspend fun upsertStories(stories: List<HackerNewsStoryEntity>)
+    @Query("DELETE FROM hn_stories WHERE source = :source")
+    suspend fun deleteAllStories(source: Source)
 
-    @Insert
-    suspend fun insertRankings(rankings: List<HackerNewsRankingEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(stories: List<HnStoryEntity>)
 
-    @Query("DELETE FROM hn_ranking WHERE news_source = :source")
-    suspend fun deleteRankings(source: String)
-
-    // cascades to the story's cached comments
-    @Query("DELETE FROM hn_story WHERE id NOT IN (SELECT story_id FROM hn_ranking)")
-    suspend fun deleteUnrankedStories()
+    @Query("SELECT * FROM hn_stories WHERE id = :id LIMIT 1")
+    suspend fun getStory(id: Long): HnStoryEntity?
 
     @Query("SELECT * FROM hn_comment WHERE story_id = :storyId ORDER BY position ASC")
-    fun observeComments(storyId: Long): Flow<List<HackerNewsCommentEntity>>
+    fun observeComments(storyId: Long): Flow<List<HnCommentEntity>>
 
-    @Query("SELECT fetched_at FROM hn_comment_fetch WHERE story_id = :storyId")
-    suspend fun getCommentsFetchedAt(storyId: Long): Long?
-
-    /**
-     * Atomically replaces all cached comments of [storyId]. Skipped if the
-     * story is no longer cached, as the comments would violate the foreign key
-     * */
     @Transaction
-    suspend fun replaceComments(
-        storyId: Long,
-        comments: List<HackerNewsCommentEntity>,
-        fetchedAt: Long
-    ) {
-        if (!storyExists(storyId)) return
+    suspend fun updateCommentCache(storyId: Long, newComments: List<HnCommentEntity>) {
         deleteComments(storyId)
-        insertComments(comments)
-        upsertCommentFetch(HackerNewsCommentFetchEntity(storyId = storyId, fetchedAt = fetchedAt))
+        insertAllComments(newComments)
     }
-
-    @Query("SELECT EXISTS(SELECT 1 FROM hn_story WHERE id = :storyId)")
-    suspend fun storyExists(storyId: Long): Boolean
 
     @Query("DELETE FROM hn_comment WHERE story_id = :storyId")
     suspend fun deleteComments(storyId: Long)
 
-    @Insert
-    suspend fun insertComments(comments: List<HackerNewsCommentEntity>)
+    @Query("DELETE FROM hn_comment WHERE story_id NOT IN (SELECT id FROM hn_stories)")
+    suspend fun deleteOrphanedComments()
 
-    @Upsert
-    suspend fun upsertCommentFetch(fetch: HackerNewsCommentFetchEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAllComments(comments: List<HnCommentEntity>)
 }
