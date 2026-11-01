@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.ChecklistRtl
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +64,27 @@ fun SearchIcon(onClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Outlined.Search,
                 contentDescription = "Add to favorites",
+                tint = Color.White
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsIcon(onClick: () -> Unit) {
+    TooltipBox(
+        positionProvider =
+            TooltipDefaults.rememberTooltipPositionProvider(
+                TooltipAnchorPosition.Above
+            ),
+        tooltip = { PlainTooltip { Text("Settings") } },
+        state = rememberTooltipState(),
+    ) {
+        IconButton(onClick = onClick) {
+            Icon(
+                imageVector = Icons.Outlined.Settings,
+                contentDescription = "Settings",
                 tint = Color.White
             )
         }

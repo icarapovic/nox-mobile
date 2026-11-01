@@ -116,7 +116,6 @@ fun HnStoryPage(
                         }
                     }
                 }
-
                 detailPageComments(story.author, comments)
             }
         }

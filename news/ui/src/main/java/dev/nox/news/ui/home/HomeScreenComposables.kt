@@ -25,6 +25,7 @@ import dev.nox.news.domain.models.Source
 import dev.nox.news.ui.components.BookmarkIcon
 import dev.nox.news.ui.components.SearchIcon
 import dev.nox.news.ui.components.Page
+import dev.nox.news.ui.components.SettingsIcon
 import dev.nox.news.ui.nav.BookmarksNavKey
 import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexMono
@@ -56,6 +57,9 @@ fun HomeScreen() {
                 actions = {
                     BookmarkIcon(true) { backStack.add(BookmarksNavKey) }
                     SearchIcon {
+
+                    }
+                    SettingsIcon {
 
                     }
                 }
