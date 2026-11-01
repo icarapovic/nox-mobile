@@ -10,3 +10,6 @@ object HomeScreenNavKey : NavKey
 data class HnStoryPageNavKey(
     val storyId: Long
 ): NavKey
+
+@Serializable
+object BookmarksNavKey: NavKey

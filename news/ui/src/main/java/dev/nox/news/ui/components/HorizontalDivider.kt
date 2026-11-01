@@ -12,6 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HorizontalDivider(paddingValues: PaddingValues = PaddingValues(5.dp)) {
+fun HorizontalDivider(paddingValues: PaddingValues = PaddingValues(vertical = 8.dp)) {
     Spacer(modifier = Modifier.padding(paddingValues).background(Color.DarkGray).fillMaxWidth().height(0.25.dp))
 }

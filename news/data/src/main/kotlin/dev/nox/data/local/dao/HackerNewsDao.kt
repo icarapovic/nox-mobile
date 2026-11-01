@@ -6,6 +6,7 @@ import androidx.room3.OnConflictStrategy
 import androidx.room3.Query
 import androidx.room3.Transaction
 import dev.nox.data.local.entity.HnCommentEntity
+import dev.nox.data.local.entity.HnStoryBookmarkEntity
 import dev.nox.data.local.entity.HnStoryEntity
 import dev.nox.news.domain.models.Source
 import kotlinx.coroutines.flow.Flow
@@ -67,4 +68,17 @@ interface HackerNewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllComments(comments: List<HnCommentEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addBookmark(storyBookmarkEntity: HnStoryBookmarkEntity): Long
+
+    @Query("SELECT * FROM hn_bookmarks ORDER BY bookmarked_at DESC")
+    fun getBookmarks(): Flow<List<HnStoryBookmarkEntity>>
+
+    @Query("DELETE FROM hn_bookmarks WHERE id = :id")
+    suspend fun deleteBookmark(id: Long): Int
+
+    @Query("SELECT EXISTS(SELECT 1 FROM hn_bookmarks WHERE id = :storyId)")
+    fun isBookmarked(storyId: Long): Flow<Boolean>
+
 }

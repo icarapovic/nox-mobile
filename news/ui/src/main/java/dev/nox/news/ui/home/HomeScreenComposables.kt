@@ -23,9 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.nox.news.domain.models.Source
 import dev.nox.news.ui.components.BookmarkIcon
-import dev.nox.news.ui.components.ColoredDotHeader
 import dev.nox.news.ui.components.SearchIcon
 import dev.nox.news.ui.components.Page
+import dev.nox.news.ui.nav.BookmarksNavKey
+import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexMono
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -34,10 +35,9 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    onNavigateToBookmarks: () -> Unit = { },
-    onNavigateToSearch: () -> Unit = { }
-) {
+fun HomeScreen() {
+    val backStack = LocalNavBackStack.current
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -54,8 +54,10 @@ fun HomeScreen(
                     )
                 },
                 actions = {
-                    BookmarkIcon { onNavigateToBookmarks() }
-                    SearchIcon { onNavigateToSearch() }
+                    BookmarkIcon(true) { backStack.add(BookmarksNavKey) }
+                    SearchIcon {
+
+                    }
                 }
             )
         },

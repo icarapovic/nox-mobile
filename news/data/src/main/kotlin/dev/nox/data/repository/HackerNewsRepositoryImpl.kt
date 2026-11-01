@@ -2,12 +2,15 @@ package dev.nox.data.repository
 
 import dev.nox.data.local.dao.HackerNewsDao
 import dev.nox.data.local.entity.HnStoryEntity
+import dev.nox.data.local.entity.toBookmark
+import dev.nox.data.local.entity.toBookmarkEntity
 import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.data.remote.client.HnCommentsClient
 import dev.nox.logging.logger.Logger
 import dev.nox.news.domain.models.Source
 import dev.nox.news.domain.models.hackernews.HnComment
 import dev.nox.news.domain.models.hackernews.HnStory
+import dev.nox.news.domain.models.hackernews.HnStoryBookmark
 import dev.nox.news.domain.repository.HackerNewsRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +22,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
-import kotlin.time.Duration.Companion.minutes
 
 internal class HackerNewsRepositoryImpl(
     private val hnDao: HackerNewsDao,
@@ -43,7 +45,7 @@ internal class HackerNewsRepositoryImpl(
         var count = 0
         result.fold(
             onSuccess = { idList ->
-                val ids = idList.take(50)
+                val ids = idList.take(20)
                 val steps = ids.size + 2
                 emit(progress(steps, ++count))
 
@@ -131,5 +133,24 @@ internal class HackerNewsRepositoryImpl(
         hnCommentsApi.fetchItem(storyId).onSuccess { story ->
             hnDao.updateCommentCache(storyId, story.toCommentEntities())
         }
+    }
+
+    override suspend fun saveBookmark(story: HnStory): Boolean {
+        return hnDao.addBookmark(story.toBookmarkEntity()) != -1L
+    }
+
+    override fun getBookmarks(): Flow<List<HnStoryBookmark>> = flow {
+        hnDao.getBookmarks().collect { bookmarkEntities ->
+            val bookmarks = bookmarkEntities.map { it.toBookmark() }
+            emit(bookmarks)
+        }
+    }
+
+    override suspend fun deleteBookmark(storyId: Long): Boolean {
+        return hnDao.deleteBookmark(storyId) != 0
+    }
+
+    override fun isBookmarked(story: HnStory): Flow<Boolean> {
+        return hnDao.isBookmarked(story.id)
     }
 }

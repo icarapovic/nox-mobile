@@ -1,5 +1,6 @@
 package dev.nox.news
 
+import dev.nox.news.ui.hn.HnBookmarksViewModel
 import dev.nox.news.ui.hn.HnStoryPageViewModel
 import dev.nox.news.ui.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
@@ -14,4 +15,6 @@ val viewModelModule = module {
     viewModel<HnStoryPageViewModel> { params ->
         HnStoryPageViewModel(storyId = params.get(), hnRepo = get())
     }
+
+    viewModel<HnBookmarksViewModel> { HnBookmarksViewModel(get()) }
 }

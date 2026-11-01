@@ -1,15 +1,12 @@
 package dev.nox.news.ui.hn
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.fromHtml
@@ -47,14 +43,19 @@ fun HnStoryPage(
     var now by remember { mutableStateOf(Instant.now()) }
     val age = Duration.between(Instant.ofEpochSecond(story?.timestamp ?: 0L), now).formatAge()
     val comments = viewModel.comments.collectAsStateWithLifecycle().value
+    val isBookmarked = viewModel.isBookmarked.collectAsStateWithLifecycle().value
 
     story?.let {
         Column(
             modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
         ) {
 
-            DetailPageToolbar(story, onBookmarkClicked = {
-
+            DetailPageToolbar(isBookmarked, story, onBookmarkClicked = {
+                if(!isBookmarked) {
+                    viewModel.bookmarkStory(story)
+                } else {
+                    viewModel.removeBookmark(story)
+                }
             })
 
             Text(
