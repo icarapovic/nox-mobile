@@ -1,5 +1,6 @@
 package dev.nox.news.ui.hn
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,6 +48,7 @@ fun HnBookmarksScreen(
         modifier = Modifier
             .padding(WindowInsets.systemBars.asPaddingValues())
             .fillMaxHeight()
+            .background(Color.Black)
     ) {
         HnBookmarkHeader(listToDelete, isSelectedMultipleActive, viewModel)
         HorizontalDivider()
