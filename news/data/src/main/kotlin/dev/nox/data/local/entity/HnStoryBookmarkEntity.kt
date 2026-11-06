@@ -9,12 +9,15 @@ import dev.nox.news.domain.models.hackernews.HnStoryBookmark
 @Entity(tableName = "hn_bookmarks")
 class HnStoryBookmarkEntity (
     @PrimaryKey
-    @ColumnInfo(name = "id") val id: Long? = null,
+    @ColumnInfo(name = "id") val id: Long,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "content") val content: String? = null,
     @ColumnInfo(name = "author") val author: String,
     @ColumnInfo(name = "timestamp") val timestamp: Long,
     @ColumnInfo(name = "url") val url: String? = null,
+    @ColumnInfo(name = "story_type") val storyType: String,
+    @ColumnInfo(name = "score") val score: Int,
+    @ColumnInfo(name = "comment_count") val commentCount: Int,
     @ColumnInfo(name = "bookmarked_at") val bookmarkedAt: Long
 )
 
@@ -28,12 +31,28 @@ fun HnStoryBookmarkEntity.toBookmark() = HnStoryBookmark (
     this.bookmarkedAt
 )
 
-fun HnStory.toBookmarkEntity() = HnStoryBookmarkEntity (
-    this.id,
-    this.title,
-    this.description,
-    this.author,
-    this.timestamp,
-    this.url,
-    System.currentTimeMillis()
+fun HnStoryBookmarkEntity.toDomain() = HnStory(
+    id = id,
+    title = title,
+    description = content,
+    author = author,
+    timestamp = timestamp,
+    url = url,
+    storyType = storyType,
+    comments = emptyList(),
+    score = score,
+    commentCount = commentCount
+)
+
+fun HnStory.toBookmarkEntity(bookmarkedAt: Long) = HnStoryBookmarkEntity (
+    id = this.id,
+    title = this.title,
+    content = this.description,
+    author = this.author,
+    timestamp = this.timestamp,
+    url = this.url,
+    storyType = this.storyType,
+    score = this.score,
+    commentCount = this.commentCount,
+    bookmarkedAt = bookmarkedAt
 )

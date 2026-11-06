@@ -35,7 +35,6 @@ data class HnStoryEntity(
             storyType = storyType,
             comments = comments.split(";").filter { it.isNotBlank() }.map { it.toLong() },
             score = score,
-            rank = rank,
             commentCount = commentCount
         )
     }

@@ -13,7 +13,7 @@ val viewModelModule = module {
     ) }
 
     viewModel<HnStoryPageViewModel> { params ->
-        HnStoryPageViewModel(storyId = params.get(), hnRepo = get())
+        HnStoryPageViewModel(storyId = params.get(), origin = params.get(), hnRepo = get())
     }
 
     viewModel<HnBookmarksViewModel> { HnBookmarksViewModel(get()) }

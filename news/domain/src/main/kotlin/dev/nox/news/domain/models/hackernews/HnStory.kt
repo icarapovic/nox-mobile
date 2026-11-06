@@ -10,6 +10,5 @@ data class HnStory (
     val storyType: String,
     val comments: List<Long>,
     val score: Int,
-    val rank: Int,
     val commentCount: Int,
 )

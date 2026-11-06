@@ -8,8 +8,11 @@ object HomeScreenNavKey : NavKey
 
 @Serializable
 data class HnStoryPageNavKey(
-    val storyId: Long
+    val storyId: Long,
+    val origin: StoryOrigin
 ): NavKey
+
+enum class StoryOrigin { FEED, BOOKMARKS }
 
 @Serializable
 object BookmarksNavKey: NavKey

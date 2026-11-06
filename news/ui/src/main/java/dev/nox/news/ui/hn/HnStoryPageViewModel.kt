@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dev.nox.news.domain.models.hackernews.HnComment
 import dev.nox.news.domain.models.hackernews.HnStory
 import dev.nox.news.domain.repository.HackerNewsRepository
+import dev.nox.news.ui.nav.StoryOrigin
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 import okhttp3.Dispatcher
 
 class HnStoryPageViewModel(
-   storyId: Long,
+    storyId: Long,
+    origin: StoryOrigin,
     private val hnRepo: HackerNewsRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
@@ -33,7 +35,10 @@ class HnStoryPageViewModel(
         }
     }
 
-    val story: StateFlow<HnStory?> = hnRepo.getStory(storyId).stateIn(
+    val story: StateFlow<HnStory?> = when (origin) {
+        StoryOrigin.FEED -> hnRepo.getStory(storyId)
+        StoryOrigin.BOOKMARKS -> hnRepo.getBookmarkedStory(storyId)
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = null

@@ -36,7 +36,7 @@ class HomeActivity : ComponentActivity() {
                         ),
                         entryProvider = entryProvider {
                             entry<HomeScreenNavKey> { HomeScreen() }
-                            entry<HnStoryPageNavKey> { HnStoryPage(it.storyId) }
+                            entry<HnStoryPageNavKey> { HnStoryPage(it.storyId, it.origin) }
                             entry<BookmarksNavKey> { HnBookmarksScreen() }
                         }
                     )

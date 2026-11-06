@@ -1,6 +1,7 @@
 package dev.nox.news.ui.hn
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +36,9 @@ import dev.nox.news.ui.components.TextLarge
 import dev.nox.news.ui.components.TextNormal
 import dev.nox.news.ui.components.TextSmall
 import dev.nox.news.ui.formatTimestampBookmark
+import dev.nox.news.ui.nav.HnStoryPageNavKey
+import dev.nox.news.ui.nav.LocalNavBackStack
+import dev.nox.news.ui.nav.StoryOrigin
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -138,9 +142,23 @@ fun HnBookmarkItem(
     viewModel: HnBookmarksViewModel
 ) {
     var showRemoveDialog by remember { mutableStateOf(false) }
-    var isChecked by remember { mutableStateOf(false) }
+    val backStack = LocalNavBackStack.current
+    val isChecked = bookmark in listToDelete
+    val toggleSelection = {
+        if (isChecked) listToDelete.remove(bookmark) else listToDelete.add(bookmark)
+    }
 
-    Column {
+    Column(
+        modifier = Modifier.clickable {
+            if (isSelectedMultipleActive.value) {
+                toggleSelection()
+            } else {
+                bookmark.id?.let { storyId ->
+                    backStack.add(HnStoryPageNavKey(storyId, StoryOrigin.BOOKMARKS))
+                }
+            }
+        }
+    ) {
         Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically) {
             Column(
@@ -153,17 +171,8 @@ fun HnBookmarkItem(
             }
 
             if(isSelectedMultipleActive.value) {
-                Checkbox(isChecked, onCheckedChange = {
-                    isChecked = !isChecked
-                })
-
-                if(isChecked) {
-                    listToDelete.add(bookmark)
-                } else {
-                    listToDelete.remove(bookmark)
-                }
+                Checkbox(isChecked, onCheckedChange = { toggleSelection() })
             } else {
-                isChecked = false
                 DeleteIcon(Color.White) { showRemoveDialog = true }
             }
         }

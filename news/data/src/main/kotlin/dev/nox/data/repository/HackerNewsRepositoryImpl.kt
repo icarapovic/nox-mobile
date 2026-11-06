@@ -4,6 +4,7 @@ import dev.nox.data.local.dao.HackerNewsDao
 import dev.nox.data.local.entity.HnStoryEntity
 import dev.nox.data.local.entity.toBookmark
 import dev.nox.data.local.entity.toBookmarkEntity
+import dev.nox.data.local.entity.toDomain
 import dev.nox.data.remote.client.HackerNewsClient
 import dev.nox.data.remote.client.HnCommentsClient
 import dev.nox.logging.logger.Logger
@@ -122,6 +123,10 @@ internal class HackerNewsRepositoryImpl(
         emit(hnDao.getStory(id)?.toDomain())
     }
 
+    override fun getBookmarkedStory(id: Long): Flow<HnStory?> = flow {
+        emit(hnDao.getBookmark(id)?.toDomain())
+    }
+
     override fun getStoryComments(id: Long): Flow<List<HnComment>> = channelFlow {
         launch { refreshComments(id) }
         hnDao.observeComments(id)
@@ -136,7 +141,7 @@ internal class HackerNewsRepositoryImpl(
     }
 
     override suspend fun saveBookmark(story: HnStory): Boolean {
-        return hnDao.addBookmark(story.toBookmarkEntity()) != -1L
+        return hnDao.addBookmark(story.toBookmarkEntity(clock.now().toEpochMilliseconds())) != -1L
     }
 
     override fun getBookmarks(): Flow<List<HnStoryBookmark>> = flow {

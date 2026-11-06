@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import dev.nox.news.domain.models.hackernews.HnStory
 import dev.nox.news.ui.formatAge
 import dev.nox.news.ui.nav.HnStoryPageNavKey
+import dev.nox.news.ui.nav.StoryOrigin
 import dev.nox.news.ui.nav.LocalNavBackStack
 import dev.nox.news.ui.theme.PlexMono
 import dev.nox.news.ui.theme.PlexSans
@@ -34,7 +35,7 @@ fun HnStoryListItem(index: Int, story: HnStory, now: Instant) {
             .background(Color.Black)
             .fillMaxWidth()
             .clickable(onClick = {
-                backStack.add(HnStoryPageNavKey(story.id))
+                backStack.add(HnStoryPageNavKey(story.id, StoryOrigin.FEED))
             })
     ) {
         Row(

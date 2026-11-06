@@ -75,6 +75,9 @@ interface HackerNewsDao {
     @Query("SELECT * FROM hn_bookmarks ORDER BY bookmarked_at DESC")
     fun getBookmarks(): Flow<List<HnStoryBookmarkEntity>>
 
+    @Query("SELECT * FROM hn_bookmarks WHERE id = :id LIMIT 1")
+    suspend fun getBookmark(id: Long): HnStoryBookmarkEntity?
+
     @Query("DELETE FROM hn_bookmarks WHERE id = :id")
     suspend fun deleteBookmark(id: Long): Int
 

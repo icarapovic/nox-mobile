@@ -17,6 +17,7 @@ interface HackerNewsRepository {
     fun observeAskStories(): Flow<List<HnStory>>
     fun observeJobsStories(): Flow<List<HnStory>>
     fun getStory(id: Long): Flow<HnStory?>
+    fun getBookmarkedStory(id: Long): Flow<HnStory?>
     fun getStoryComments(id: Long): Flow<List<HnComment>>
     suspend fun saveBookmark(story: HnStory): Boolean
     fun getBookmarks(): Flow<List<HnStoryBookmark>>

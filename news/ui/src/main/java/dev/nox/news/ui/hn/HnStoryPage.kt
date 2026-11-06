@@ -37,6 +37,7 @@ import dev.nox.news.ui.formatAge
 import dev.nox.news.ui.theme.PlexMono
 import dev.nox.news.ui.theme.PlexSans
 import org.koin.compose.viewmodel.koinViewModel
+import dev.nox.news.ui.nav.StoryOrigin
 import org.koin.core.parameter.parametersOf
 import java.time.Duration
 import java.time.Instant
@@ -44,7 +45,8 @@ import java.time.Instant
 @Composable
 fun HnStoryPage(
     storyId: Long,
-    viewModel: HnStoryPageViewModel = koinViewModel { parametersOf(storyId) }
+    origin: StoryOrigin,
+    viewModel: HnStoryPageViewModel = koinViewModel { parametersOf(storyId, origin) }
 ) {
 
     val story = viewModel.story.collectAsStateWithLifecycle().value
